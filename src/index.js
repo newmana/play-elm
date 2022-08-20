@@ -7,6 +7,22 @@ var app = Elm.PlayElm.Main.init({
 app.ports.getBoundingClientRect.subscribe(function (id) {
   var entity = document.getElementById(id);
   const brOrNull = entity ? entity.getBoundingClientRect() : null;
-  console.log("Got " + JSON.stringify(brOrNull));
+  console.log("Got brOrNull " + JSON.stringify(brOrNull));
   app.ports.setBoundingClientRect.send(brOrNull);
+});
+
+app.ports.getComputedStyle.subscribe(function (id) {
+  var entity = document.getElementById(id);
+  var style = window.getComputedStyle(entity);
+  const fontFamily = style.getPropertyValue('font-family');
+  const fontSize = parseFloat(style.getPropertyValue('font-size'));
+  const lineHeight = parseFloat(style.getPropertyValue('line-height'));
+  const span = document.createElement('span');
+  entity.appendChild(span);
+  span.innerHTML = ''.padEnd(50, 'X');
+  const cellWidth = span.getBoundingClientRect().width / 50;
+  entity.removeChild(span);
+  const cr = {fontFamily, fontSize, lineHeight, cellWidth};
+  console.log("Got style " + JSON.stringify(cr));
+  app.ports.setComputedStyle.send(cr);
 });

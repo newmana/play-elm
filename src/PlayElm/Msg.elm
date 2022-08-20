@@ -9,4 +9,5 @@ type Msg
     = MouseMove MouseEvent.Event
     | Tick Time.Posix
     | SetBoundingClientRect (Maybe Types.BoundingClientRect)
+    | SetComputedStyle (Maybe Types.ComputedStyle)
     | Nothing

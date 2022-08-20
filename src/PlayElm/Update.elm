@@ -9,32 +9,34 @@ import Time as Time
 
 update : Msg.Msg -> Model.Model -> ( Model.Model, Cmd Msg.Msg )
 update msg model =
-    case msg of
-        Msg.Tick newTime ->
-            let
-                _ =
-                    Debug.log "Move " ((Tuple.first model.pointer |> String.fromFloat) ++ " " ++ (Time.posixToMillis model.time |> String.fromInt))
-            in
-            ( { model | time = newTime }, Cmd.none ) |> Util.addCmd (Port.getBoundingClientRect Model.elementId)
+    case ( msg, model ) of
+        ( Msg.Tick newTime, Model.Booting bm ) ->
+            tick newTime bm |> Tuple.mapFirst Model.Booting
 
-        Msg.MouseMove e ->
-            let
-                _ =
-                    Debug.log "Move " ((Tuple.first e.pagePos |> String.fromFloat) ++ " " ++ (Time.posixToMillis model.time |> String.fromInt))
-            in
-            ( { model | pointer = e.pagePos }, Cmd.none )
+        ( Msg.Tick newTime, Model.Running rm ) ->
+            tick newTime rm |> Tuple.mapFirst Model.Running
 
-        Msg.SetBoundingClientRect r ->
-            case r of
-                Just rect ->
-                    let
-                        _ =
-                            Debug.log "HW" (String.fromFloat rect.height ++ ", " ++ String.fromFloat rect.width)
-                    in
-                    ( { model | widthHeight = ( rect.width, rect.height ) }, Cmd.none )
+        ( Msg.MouseMove e, Model.Booting bm ) ->
+            mouseMove e.pagePos bm |> Tuple.mapFirst Model.Booting
 
-                _ ->
-                    ( model, Cmd.none )
+        ( Msg.MouseMove e, Model.Running rm ) ->
+            mouseMove e.pagePos rm |> Tuple.mapFirst Model.Running
+
+        ( Msg.SetBoundingClientRect r, Model.Booting bm ) ->
+            ( Model.Booting { bm | clientRect = r }, Cmd.none )
+
+        ( Msg.SetComputedStyle s, Model.Booting bm ) ->
+            ( Model.Booting { bm | computedStyle = s }, Cmd.none )
 
         _ ->
             ( model, Cmd.none )
+
+
+tick : Time.Posix -> Model.CommonProperties a -> ( Model.CommonProperties a, Cmd msg )
+tick newTime m =
+    ( { m | time = newTime }, Port.getBoundingClientRect Model.elementId )
+
+
+mouseMove : ( Float, Float ) -> Model.CommonProperties a -> ( Model.CommonProperties a, Cmd msg )
+mouseMove pos m =
+    ( { m | pointer = pos }, Cmd.none )

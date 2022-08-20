@@ -1,10 +1,14 @@
 module PlayElm.Model exposing
-    ( Model
+    ( BootingModel
+    , CommonProperties
+    , Model(..)
+    , RunningModel
     , defaultModel
     , elementId
     )
 
 import Browser.Navigation as BrowserNavigation
+import PlayElm.Types as Types
 import Time as Time
 
 
@@ -13,20 +17,36 @@ elementId =
     "play"
 
 
-type alias Model =
-    { cols : Int
-    , rows : Int
-    , widthHeight : ( Float, Float )
-    , pointer : ( Float, Float )
-    , time : Time.Posix
+type alias CommonProperties a =
+    { a
+        | pointer : ( Float, Float )
+        , time : Time.Posix
     }
 
 
-defaultModel : Model
+type Model
+    = Booting BootingModel
+    | Running RunningModel
+
+
+type alias BootingModel =
+    CommonProperties
+        { clientRect : Maybe Types.BoundingClientRect
+        , computedStyle : Maybe Types.ComputedStyle
+        }
+
+
+type alias RunningModel =
+    CommonProperties
+        { clientRect : Types.BoundingClientRect
+        , computedStyle : Types.ComputedStyle
+        }
+
+
+defaultModel : BootingModel
 defaultModel =
-    { cols = 0
-    , rows = 0
-    , widthHeight = ( 0, 0 )
-    , pointer = ( 0, 0 )
+    { pointer = ( 0, 0 )
     , time = Time.millisToPosix 0
+    , clientRect = Nothing
+    , computedStyle = Nothing
     }
