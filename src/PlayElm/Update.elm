@@ -3,6 +3,7 @@ module PlayElm.Update exposing (update)
 import PlayElm.Model as Model
 import PlayElm.Msg as Msg
 import PlayElm.Port as Port
+import PlayElm.Programs.Balls as Balls
 import PlayElm.Types as Types
 import PlayElm.Util as Util
 import Time as Time
@@ -20,8 +21,20 @@ update msg model =
 
         ( Msg.Tick newTime, Model.Running rm ) ->
             let
+                context =
+                    { time = rm.time
+                    , cols = rm.cols
+                    , rows = rm.rows
+                    , width = rm.clientRect.width
+                    , height = rm.clientRect.height
+                    , aspect = rm.aspect
+                    }
+
                 _ =
                     Debug.log "Now" "Running"
+
+                _ =
+                    Debug.log "Now" (Balls.run 1 1 context)
             in
             tick newTime rm |> Tuple.mapFirst Model.Running
 
@@ -55,7 +68,22 @@ boot : Maybe Types.BoundingClientRect -> Maybe Types.ComputedStyle -> Model.Boot
 boot maybeCr maybeCs m =
     case ( maybeCr, maybeCs ) of
         ( Just cr, Just cs ) ->
-            Model.Running { pointer = m.pointer, time = m.time, clientRect = cr, computedStyle = cs }
+            let
+                rows =
+                    floor (cr.width / cs.cellWidth)
+
+                cols =
+                    floor (cr.height / cs.lineHeight)
+            in
+            Model.Running
+                { pointer = m.pointer
+                , time = m.time
+                , clientRect = cr
+                , computedStyle = cs
+                , aspect = cs.cellWidth / cs.lineHeight
+                , rows = rows
+                , cols = cols
+                }
 
         ( Just cr, Nothing ) ->
             Model.Booting { m | clientRect = Just cr }

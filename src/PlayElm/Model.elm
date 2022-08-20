@@ -40,6 +40,9 @@ type alias RunningModel =
     CommonProperties
         { clientRect : Types.BoundingClientRect
         , computedStyle : Types.ComputedStyle
+        , aspect : Float
+        , cols : Int
+        , rows : Int
         }
 
 

@@ -1,4 +1,6 @@
-module PlayElm.Types exposing (BoundingClientRect, ComputedStyle)
+module PlayElm.Types exposing (BoundingClientRect, ComputedStyle, Context)
+
+import Time as Time
 
 
 type alias BoundingClientRect =
@@ -18,4 +20,14 @@ type alias ComputedStyle =
     , fontSize : Float
     , lineHeight : Float
     , cellWidth : Float
+    }
+
+
+type alias Context =
+    { time : Time.Posix
+    , cols : Int
+    , rows : Int
+    , width : Float
+    , height : Float
+    , aspect : Float
     }
