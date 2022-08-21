@@ -25,7 +25,7 @@ init flags url nav =
 subscriptions : Model.Model -> Sub Msg.Msg
 subscriptions model =
     Sub.batch
-        [ Time.every 10 Msg.Tick
+        [ Time.every 5 Msg.Tick
         , Port.setBoundingClientRect Msg.SetBoundingClientRect
         , Port.setComputedStyle Msg.SetComputedStyle
         ]
