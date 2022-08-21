@@ -7,7 +7,6 @@ var app = Elm.PlayElm.Main.init({
 app.ports.getBoundingClientRect.subscribe(function (id) {
   var entity = document.getElementById(id);
   const brOrNull = entity ? entity.getBoundingClientRect() : null;
-  console.log("Got brOrNull " + JSON.stringify(brOrNull));
   app.ports.setBoundingClientRect.send(brOrNull);
 });
 
@@ -23,6 +22,5 @@ app.ports.getComputedStyle.subscribe(function (id) {
   const cellWidth = span.getBoundingClientRect().width / 50;
   entity.removeChild(span);
   const cr = {fontFamily, fontSize, lineHeight, cellWidth};
-  console.log("Got style " + JSON.stringify(cr));
   app.ports.setComputedStyle.send(cr);
 });

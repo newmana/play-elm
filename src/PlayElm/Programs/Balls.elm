@@ -6,7 +6,7 @@ import Time as Time
 
 chars : String
 chars =
-    "╳ABC|/:÷×+-=?*· ."
+    "#ABC|/:÷×+-=?*· "
 
 
 tau : Float
@@ -21,7 +21,7 @@ map v inA inB outA outB =
 
 mix : Float -> Float -> Float -> Float
 mix v1 v2 a =
-    v1 * (1 - a) + v2 * a
+    v1 * (1 - a) + (v2 * a)
 
 
 transform : ( Float, Float ) -> ( Float, Float ) -> Float -> ( Float, Float )
@@ -40,10 +40,10 @@ transform ( pX, pY ) ( transX, transY ) rot =
             pY - transY
 
         newX =
-            dx * c - dy * s
+            (dx * c) - (dy * s)
 
         newY =
-            dx * s - dy * c
+            (dx * s) - (dy * c)
     in
     ( newX, newY )
 
@@ -57,9 +57,9 @@ opSmoothUnion : Float -> Float -> Float -> Float
 opSmoothUnion d1 d2 k =
     let
         h =
-            clamp (0.5 + 0.5 * (d2 - d1) / k) 0.0 1.0
+            clamp 0.0 1.0 (0.5 + 0.5 * (d2 - d1) / k)
     in
-    mix d2 d1 h - k * h * (1.0 - h)
+    mix d2 d1 h - (k * h * (1.0 - h))
 
 
 sdCircle : ( Float, Float ) -> Float -> Float
@@ -67,19 +67,55 @@ sdCircle p radius =
     length2D p - radius
 
 
-run : Int -> Int -> Types.Context -> Char
-run x y context =
+run : Types.Context -> Int -> Int -> String
+run context x y =
     let
-        a =
+        t =
+            ((Time.posixToMillis context.time |> toFloat) * 0.001) + 10
+
+        m =
             min context.cols context.rows |> toFloat
 
+        a =
+            context.aspect
+
         stX =
-            2 * ((x - context.cols |> toFloat) / 2) / a * context.aspect
+            2 * ((x - context.cols |> toFloat) / 2) / (m * a)
 
         stY =
-            2 * ((y - context.rows |> toFloat) / 2) / a
+            2 * ((y - context.rows |> toFloat) / 2) / m
 
         s =
-            map (sin ((Time.posixToMillis context.time |> toFloat) * 0.0005)) -1 1 0.0 0.9
+            map (sin (t * 0.5)) -1 1 0.0 0.9
+
+        dR num i =
+            map (cos (t * 0.95 * (i + 1) / (num + 1))) -1 1 0.1 0.3
+
+        dX num i =
+            map (cos (t * 0.23 * ((i / num) * (pi + pi)))) -1 1 -1.2 1.2
+
+        dY num i =
+            map (sin (t * 0.37 * ((i / num) * (pi + pi)))) -1 1 -1.2 1.2
+
+        dF num i =
+            transform ( stX, stY ) ( dX num i, dY num i ) t
+
+        maxNum =
+            12
+
+        calc fIndex currentD =
+            opSmoothUnion currentD (sdCircle (dF maxNum fIndex) (dR maxNum fIndex)) s
+
+        d =
+            List.foldl
+                (\index currentD -> calc (toFloat index) currentD)
+                1.0e100
+                (List.range 0 (maxNum - 1))
+
+        c =
+            1.0 - (e ^ (-3 * abs d))
+
+        charsIndex =
+            floor (c * (String.length chars |> toFloat))
     in
-    'A'
+    String.slice charsIndex (charsIndex + 1) chars

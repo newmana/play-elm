@@ -43,6 +43,7 @@ type alias RunningModel =
         , aspect : Float
         , cols : Int
         , rows : Int
+        , screen : List String
         }
 
 

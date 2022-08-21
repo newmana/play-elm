@@ -13,10 +13,6 @@ update : Msg.Msg -> Model.Model -> ( Model.Model, Cmd Msg.Msg )
 update msg model =
     case ( msg, model ) of
         ( Msg.Tick newTime, Model.Booting bm ) ->
-            let
-                _ =
-                    Debug.log "Now" "Booting"
-            in
             tick newTime bm |> Tuple.mapFirst Model.Booting
 
         ( Msg.Tick newTime, Model.Running rm ) ->
@@ -30,13 +26,16 @@ update msg model =
                     , aspect = rm.aspect
                     }
 
-                _ =
-                    Debug.log "Now" "Running"
+                row colNum =
+                    List.foldl (\rowNum str -> str ++ Balls.run context rowNum colNum) "" (List.range 0 (rm.rows - 1))
 
-                _ =
-                    Debug.log "Now" (Balls.run 1 1 context)
+                newScreen =
+                    List.foldl (\colNum screen -> row colNum :: screen) [] (List.range 0 (rm.cols - 1))
+
+                newRm =
+                    { rm | screen = newScreen }
             in
-            tick newTime rm |> Tuple.mapFirst Model.Running
+            tick newTime newRm |> Tuple.mapFirst Model.Running
 
         ( Msg.MouseMove e, Model.Booting bm ) ->
             mouseMove e.pagePos bm |> Tuple.mapFirst Model.Booting
@@ -83,6 +82,7 @@ boot maybeCr maybeCs m =
                 , aspect = cs.cellWidth / cs.lineHeight
                 , rows = rows
                 , cols = cols
+                , screen = []
                 }
 
         ( Just cr, Nothing ) ->
