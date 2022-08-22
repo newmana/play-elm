@@ -10,4 +10,5 @@ type Msg
     | Tick Time.Posix
     | SetBoundingClientRect (Maybe Types.BoundingClientRect)
     | SetComputedStyle (Maybe Types.ComputedStyle)
+    | SetStartTime Time.Posix
     | Nothing

@@ -71,7 +71,7 @@ run : Types.Context -> Int -> Int -> String
 run context x y =
     let
         t =
-            ((Time.posixToMillis context.time |> toFloat) * 0.001) + 10
+            (context.time * 0.001) + 10
 
         m =
             min context.cols context.rows |> toFloat

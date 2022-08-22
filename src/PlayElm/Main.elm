@@ -18,6 +18,7 @@ import Url as Url
 init : flags -> Url.Url -> BrowserNavigation.Key -> ( Model.Model, Cmd Msg.Msg )
 init flags url nav =
     Update.update Msg.Nothing (Model.Booting Model.defaultModel)
+        |> Util.addCmd (Task.perform Msg.SetStartTime Time.now)
         |> Util.addCmd (Port.getBoundingClientRect Model.elementId)
         |> Util.addCmd (Port.getComputedStyle Model.elementId)
 

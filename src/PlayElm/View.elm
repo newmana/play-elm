@@ -1,5 +1,6 @@
 module PlayElm.View exposing (view)
 
+import Array as Array
 import Html as Html
 import Html.Attributes as HtmlAttributes
 import Html.Events.Extra.Mouse as MouseEvent
@@ -22,4 +23,10 @@ viewScreen model =
             []
 
         Model.Running rm ->
-            List.map (\l -> Html.text (l ++ "\n")) rm.screen
+            Array.map
+                (\l ->
+                    Html.span [ HtmlAttributes.style "display" "block" ]
+                        [ Html.text l ]
+                )
+                rm.screen
+                |> Array.toList

@@ -1,5 +1,6 @@
 module PlayElm.Update exposing (update)
 
+import Array as Array
 import PlayElm.Model as Model
 import PlayElm.Msg as Msg
 import PlayElm.Port as Port
@@ -13,7 +14,7 @@ update : Msg.Msg -> Model.Model -> ( Model.Model, Cmd Msg.Msg )
 update msg model =
     case ( msg, model ) of
         ( Msg.Tick newTime, Model.Booting bm ) ->
-            tick newTime bm |> Tuple.mapFirst Model.Booting
+            tick 0 newTime bm |> Tuple.mapFirst Model.Booting
 
         ( Msg.Tick newTime, Model.Running rm ) ->
             let
@@ -30,12 +31,12 @@ update msg model =
                     List.foldl (\rowNum str -> str ++ Balls.run context rowNum colNum) "" (List.range 0 (rm.rows - 1))
 
                 newScreen =
-                    List.foldl (\colNum screen -> row colNum :: screen) [] (List.range 0 (rm.cols - 1))
+                    List.foldl (\colNum -> Array.push (row colNum)) Array.empty (List.range 0 (rm.cols - 1))
 
                 newRm =
                     { rm | screen = newScreen }
             in
-            tick newTime newRm |> Tuple.mapFirst Model.Running
+            tick rm.startTime newTime newRm |> Tuple.mapFirst Model.Running
 
         ( Msg.MouseMove e, Model.Booting bm ) ->
             mouseMove e.pagePos bm |> Tuple.mapFirst Model.Booting
@@ -44,18 +45,38 @@ update msg model =
             mouseMove e.pagePos rm |> Tuple.mapFirst Model.Running
 
         ( Msg.SetBoundingClientRect r, Model.Booting bm ) ->
-            ( boot r bm.computedStyle bm, Cmd.none )
+            let
+                newModel =
+                    { bm | clientRect = r }
+            in
+            ( boot newModel, Cmd.none )
 
         ( Msg.SetComputedStyle s, Model.Booting bm ) ->
-            ( boot bm.clientRect s bm, Cmd.none )
+            let
+                newModel =
+                    { bm | computedStyle = s }
+            in
+            ( boot newModel, Cmd.none )
+
+        ( Msg.SetStartTime newTime, Model.Booting bm ) ->
+            let
+                newModel =
+                    { bm | startTime = timeToFloat newTime |> Just }
+            in
+            ( boot newModel, Cmd.none )
 
         _ ->
             ( model, Cmd.none )
 
 
-tick : Time.Posix -> Model.CommonProperties a -> ( Model.CommonProperties a, Cmd msg )
-tick newTime m =
-    ( { m | time = newTime }, Port.getBoundingClientRect Model.elementId )
+timeToFloat : Time.Posix -> Float
+timeToFloat t =
+    Time.posixToMillis t |> toFloat
+
+
+tick : Float -> Time.Posix -> Model.CommonProperties a -> ( Model.CommonProperties a, Cmd msg )
+tick startTime newTime m =
+    ( { m | time = startTime - timeToFloat newTime }, Port.getBoundingClientRect Model.elementId )
 
 
 mouseMove : ( Float, Float ) -> Model.CommonProperties a -> ( Model.CommonProperties a, Cmd msg )
@@ -63,10 +84,10 @@ mouseMove pos m =
     ( { m | pointer = pos }, Cmd.none )
 
 
-boot : Maybe Types.BoundingClientRect -> Maybe Types.ComputedStyle -> Model.BootingModel -> Model.Model
-boot maybeCr maybeCs m =
-    case ( maybeCr, maybeCs ) of
-        ( Just cr, Just cs ) ->
+boot : Model.BootingModel -> Model.Model
+boot m =
+    case ( m.clientRect, m.computedStyle, m.startTime ) of
+        ( Just cr, Just cs, Just st ) ->
             let
                 rows =
                     floor (cr.width / cs.cellWidth)
@@ -79,17 +100,12 @@ boot maybeCr maybeCs m =
                 , time = m.time
                 , clientRect = cr
                 , computedStyle = cs
+                , startTime = st
                 , aspect = cs.cellWidth / cs.lineHeight
                 , rows = rows
                 , cols = cols
-                , screen = []
+                , screen = Array.empty
                 }
 
-        ( Just cr, Nothing ) ->
-            Model.Booting { m | clientRect = Just cr }
-
-        ( Nothing, Just cs ) ->
-            Model.Booting { m | computedStyle = Just cs }
-
-        ( Nothing, Nothing ) ->
+        ( _, _, _ ) ->
             Model.Booting m

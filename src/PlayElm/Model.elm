@@ -7,6 +7,7 @@ module PlayElm.Model exposing
     , elementId
     )
 
+import Array as Array
 import Browser.Navigation as BrowserNavigation
 import PlayElm.Types as Types
 import Time as Time
@@ -20,7 +21,7 @@ elementId =
 type alias CommonProperties a =
     { a
         | pointer : ( Float, Float )
-        , time : Time.Posix
+        , time : Float
     }
 
 
@@ -33,6 +34,7 @@ type alias BootingModel =
     CommonProperties
         { clientRect : Maybe Types.BoundingClientRect
         , computedStyle : Maybe Types.ComputedStyle
+        , startTime : Maybe Float
         }
 
 
@@ -40,17 +42,19 @@ type alias RunningModel =
     CommonProperties
         { clientRect : Types.BoundingClientRect
         , computedStyle : Types.ComputedStyle
+        , startTime : Float
         , aspect : Float
         , cols : Int
         , rows : Int
-        , screen : List String
+        , screen : Array.Array String
         }
 
 
 defaultModel : BootingModel
 defaultModel =
     { pointer = ( 0, 0 )
-    , time = Time.millisToPosix 0
+    , time = 0.0
     , clientRect = Nothing
     , computedStyle = Nothing
+    , startTime = Nothing
     }

@@ -24,7 +24,7 @@ type alias ComputedStyle =
 
 
 type alias Context =
-    { time : Time.Posix
+    { time : Float
     , cols : Int
     , rows : Int
     , width : Float
