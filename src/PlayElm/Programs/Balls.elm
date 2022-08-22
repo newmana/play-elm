@@ -80,10 +80,10 @@ run context x y =
             context.aspect
 
         stX =
-            2 * ((x - context.cols |> toFloat) / 2) / (m * a)
+            2.0 * ((toFloat x - (toFloat context.cols / 2.0)) / m) * a
 
         stY =
-            2 * ((y - context.rows |> toFloat) / 2) / m
+            2.0 * (toFloat y - (toFloat context.rows / 2.0)) / m
 
         s =
             map (sin (t * 0.5)) -1 1 0.0 0.9

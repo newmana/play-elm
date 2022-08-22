@@ -14,7 +14,7 @@ update : Msg.Msg -> Model.Model -> ( Model.Model, Cmd Msg.Msg )
 update msg model =
     case ( msg, model ) of
         ( Msg.Tick newTime, Model.Booting bm ) ->
-            tick 0 newTime bm |> Tuple.mapFirst Model.Booting
+            tick newTime bm |> Tuple.mapFirst Model.Booting
 
         ( Msg.Tick newTime, Model.Running rm ) ->
             let
@@ -36,7 +36,7 @@ update msg model =
                 newRm =
                     { rm | screen = newScreen }
             in
-            tick rm.startTime newTime newRm |> Tuple.mapFirst Model.Running
+            tick newTime newRm |> Tuple.mapFirst Model.Running
 
         ( Msg.MouseMove e, Model.Booting bm ) ->
             mouseMove e.pagePos bm |> Tuple.mapFirst Model.Booting
@@ -58,13 +58,6 @@ update msg model =
             in
             ( boot newModel, Cmd.none )
 
-        ( Msg.SetStartTime newTime, Model.Booting bm ) ->
-            let
-                newModel =
-                    { bm | startTime = timeToFloat newTime |> Just }
-            in
-            ( boot newModel, Cmd.none )
-
         _ ->
             ( model, Cmd.none )
 
@@ -74,9 +67,9 @@ timeToFloat t =
     Time.posixToMillis t |> toFloat
 
 
-tick : Float -> Time.Posix -> Model.CommonProperties a -> ( Model.CommonProperties a, Cmd msg )
-tick startTime newTime m =
-    ( { m | time = startTime - timeToFloat newTime }, Port.getBoundingClientRect Model.elementId )
+tick : Float -> Model.CommonProperties a -> ( Model.CommonProperties a, Cmd msg )
+tick delta m =
+    ( { m | time = m.time + delta }, Port.getBoundingClientRect Model.elementId )
 
 
 mouseMove : ( Float, Float ) -> Model.CommonProperties a -> ( Model.CommonProperties a, Cmd msg )
@@ -86,13 +79,13 @@ mouseMove pos m =
 
 boot : Model.BootingModel -> Model.Model
 boot m =
-    case ( m.clientRect, m.computedStyle, m.startTime ) of
-        ( Just cr, Just cs, Just st ) ->
+    case ( m.clientRect, m.computedStyle ) of
+        ( Just cr, Just cs ) ->
             let
-                rows =
+                cols =
                     floor (cr.width / cs.cellWidth)
 
-                cols =
+                rows =
                     floor (cr.height / cs.lineHeight)
             in
             Model.Running
@@ -100,12 +93,11 @@ boot m =
                 , time = m.time
                 , clientRect = cr
                 , computedStyle = cs
-                , startTime = st
                 , aspect = cs.cellWidth / cs.lineHeight
                 , rows = rows
                 , cols = cols
                 , screen = Array.empty
                 }
 
-        ( _, _, _ ) ->
+        ( _, _ ) ->
             Model.Booting m

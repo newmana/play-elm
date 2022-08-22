@@ -7,8 +7,7 @@ import Time as Time
 
 type Msg
     = MouseMove MouseEvent.Event
-    | Tick Time.Posix
+    | Tick Float
     | SetBoundingClientRect (Maybe Types.BoundingClientRect)
     | SetComputedStyle (Maybe Types.ComputedStyle)
-    | SetStartTime Time.Posix
     | Nothing

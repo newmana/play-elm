@@ -34,7 +34,6 @@ type alias BootingModel =
     CommonProperties
         { clientRect : Maybe Types.BoundingClientRect
         , computedStyle : Maybe Types.ComputedStyle
-        , startTime : Maybe Float
         }
 
 
@@ -42,7 +41,6 @@ type alias RunningModel =
     CommonProperties
         { clientRect : Types.BoundingClientRect
         , computedStyle : Types.ComputedStyle
-        , startTime : Float
         , aspect : Float
         , cols : Int
         , rows : Int
@@ -56,5 +54,4 @@ defaultModel =
     , time = 0.0
     , clientRect = Nothing
     , computedStyle = Nothing
-    , startTime = Nothing
     }

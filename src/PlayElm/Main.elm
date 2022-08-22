@@ -1,6 +1,7 @@
 module PlayElm.Main exposing (main)
 
 import Browser as Browser
+import Browser.Events as BrowserEvents
 import Browser.Navigation as BrowserNavigation
 import Html.Events.Extra.Mouse as MouseEvent
 import Json.Decode as JsonDecode
@@ -18,7 +19,6 @@ import Url as Url
 init : flags -> Url.Url -> BrowserNavigation.Key -> ( Model.Model, Cmd Msg.Msg )
 init flags url nav =
     Update.update Msg.Nothing (Model.Booting Model.defaultModel)
-        |> Util.addCmd (Task.perform Msg.SetStartTime Time.now)
         |> Util.addCmd (Port.getBoundingClientRect Model.elementId)
         |> Util.addCmd (Port.getComputedStyle Model.elementId)
 
@@ -26,9 +26,9 @@ init flags url nav =
 subscriptions : Model.Model -> Sub Msg.Msg
 subscriptions model =
     Sub.batch
-        [ Time.every 5 Msg.Tick
-        , Port.setBoundingClientRect Msg.SetBoundingClientRect
+        [ Port.setBoundingClientRect Msg.SetBoundingClientRect
         , Port.setComputedStyle Msg.SetComputedStyle
+        , BrowserEvents.onAnimationFrameDelta Msg.Tick
         ]
 
 
