@@ -1,5 +1,7 @@
 module PlayElm.Programs.Balls exposing (run)
 
+import PlayElm.Modules.Num as Num
+import PlayElm.Modules.Sdf as Sdf
 import PlayElm.Types as Types
 import Time as Time
 
@@ -12,16 +14,6 @@ chars =
 tau : Float
 tau =
     pi * 2
-
-
-map : Float -> Float -> Float -> Float -> Float -> Float
-map v inA inB outA outB =
-    outA + (outB - outA) * ((v - inA) / (inB - inA))
-
-
-mix : Float -> Float -> Float -> Float
-mix v1 v2 a =
-    v1 * (1 - a) + (v2 * a)
 
 
 transform : ( Float, Float ) -> ( Float, Float ) -> Float -> ( Float, Float )
@@ -48,25 +40,6 @@ transform ( pX, pY ) ( transX, transY ) rot =
     ( newX, newY )
 
 
-length2D : ( Float, Float ) -> Float
-length2D ( x, y ) =
-    sqrt ((x * x) + (y * y))
-
-
-opSmoothUnion : Float -> Float -> Float -> Float
-opSmoothUnion d1 d2 k =
-    let
-        h =
-            clamp 0.0 1.0 (0.5 + 0.5 * (d2 - d1) / k)
-    in
-    mix d2 d1 h - (k * h * (1.0 - h))
-
-
-sdCircle : ( Float, Float ) -> Float -> Float
-sdCircle p radius =
-    length2D p - radius
-
-
 run : Types.Context -> Int -> Int -> String
 run context x y =
     let
@@ -86,16 +59,16 @@ run context x y =
             2.0 * (toFloat y - (toFloat context.rows / 2.0)) / m
 
         s =
-            map (sin (t * 0.5)) -1 1 0.0 0.9
+            Num.map (sin (t * 0.5)) -1 1 0.0 0.9
 
         dR num i =
-            map (cos (t * 0.95 * (i + 1) / (num + 1))) -1 1 0.1 0.3
+            Num.map (cos (t * 0.95 * (i + 1) / (num + 1))) -1 1 0.1 0.3
 
         dX num i =
-            map (cos (t * 0.23 * ((i / num) * (pi + pi)))) -1 1 -1.2 1.2
+            Num.map (cos (t * 0.23 * ((i / num) * (pi + pi)))) -1 1 -1.2 1.2
 
         dY num i =
-            map (sin (t * 0.37 * ((i / num) * (pi + pi)))) -1 1 -1.2 1.2
+            Num.map (sin (t * 0.37 * ((i / num) * (pi + pi)))) -1 1 -1.2 1.2
 
         dF num i =
             transform ( stX, stY ) ( dX num i, dY num i ) t
@@ -104,7 +77,7 @@ run context x y =
             12
 
         calc fIndex currentD =
-            opSmoothUnion currentD (sdCircle (dF maxNum fIndex) (dR maxNum fIndex)) s
+            Sdf.opSmoothUnion currentD (Sdf.sdCircle (dF maxNum fIndex) (dR maxNum fIndex)) s
 
         d =
             List.foldl
