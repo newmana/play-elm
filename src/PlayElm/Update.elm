@@ -27,11 +27,11 @@ update msg model =
                     , aspect = rm.aspect
                     }
 
-                row colNum =
-                    List.foldl (\rowNum str -> str ++ Balls.run context rowNum colNum) "" (List.range 0 (rm.rows - 1))
+                row rowNum =
+                    List.foldl (\colNum str -> str ++ Balls.run context colNum rowNum) "" (List.range 0 (rm.cols - 1))
 
                 newScreen =
-                    List.foldl (\colNum -> Array.push (row colNum)) Array.empty (List.range 0 (rm.cols - 1))
+                    List.foldl (\rowNum -> Array.push (row rowNum)) Array.empty (List.range 0 (rm.rows - 1))
 
                 newRm =
                     { rm | screen = newScreen }
