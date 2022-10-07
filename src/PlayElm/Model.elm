@@ -9,6 +9,7 @@ module PlayElm.Model exposing
 
 import Array as Array
 import Browser.Navigation as BrowserNavigation
+import PlayElm.Msg as Msg
 import PlayElm.Types as Types
 import Time as Time
 
@@ -45,6 +46,7 @@ type alias RunningModel =
         , cols : Int
         , rows : Int
         , screen : Array.Array String
+        , more : Bool
         }
 
 

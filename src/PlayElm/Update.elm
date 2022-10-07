@@ -8,6 +8,7 @@ import PlayElm.Programs.Balls as Balls
 import PlayElm.Programs.LineTenPrint as LineTenPrint
 import PlayElm.Types as Types
 import PlayElm.Util as Util
+import Random as Random
 import Time as Time
 
 
@@ -17,27 +18,47 @@ update msg model =
         ( Msg.Tick newTime, Model.Booting bm ) ->
             tick newTime bm |> Tuple.mapFirst Model.Booting
 
-        ( Msg.Tick newTime, Model.Running rm ) ->
+        ( Msg.GenerateMaze row st, Model.Running rm ) ->
             let
-                context =
-                    { time = rm.time
-                    , cols = rm.cols
-                    , rows = rm.rows
-                    , width = rm.clientRect.width
-                    , height = rm.clientRect.height
-                    , aspect = rm.aspect
-                    }
-
-                row rowNum =
-                    List.foldl (\colNum str -> str ++ Balls.run context colNum rowNum) "" (List.range 0 (rm.cols - 1))
-
                 newScreen =
-                    List.foldl (\rowNum -> Array.push (row rowNum)) Array.empty (List.range 0 (rm.rows - 1))
+                    Array.push st rm.screen
 
                 newRm =
                     { rm | screen = newScreen }
             in
-            tick newTime newRm |> Tuple.mapFirst Model.Running
+            if row > 0 then
+                ( Model.Running newRm, Random.generate (Msg.GenerateMaze (row - 1)) (LineTenPrint.generateMaze rm.cols) )
+
+            else
+                ( Model.Running { newRm | more = False }, Port.getBoundingClientRect Model.elementId )
+
+        ( Msg.Tick newTime, Model.Running rm ) ->
+            let
+                --context =
+                --    { time = rm.time
+                --    , cols = rm.cols
+                --    , rows = rm.rows
+                --    , width = rm.clientRect.width
+                --    , height = rm.clientRect.height
+                --    , aspect = rm.aspect
+                --    }
+                --
+                --row rowNum =
+                --    List.foldl (\colNum str -> str ++ Balls.run context colNum rowNum) "" (List.range 0 (rm.cols - 1))
+                --
+                --newScreen =
+                --    List.foldl (\rowNum -> Array.push (row rowNum)) Array.empty (List.range 0 (rm.rows - 1))
+                --
+                --newRm =
+                --    { rm | screen = newScreen }
+                updateTime =
+                    tick newTime rm |> Tuple.mapFirst Model.Running
+            in
+            if rm.more then
+                ( Model.Running rm, Random.generate (Msg.GenerateMaze rm.rows) (LineTenPrint.generateMaze rm.cols) )
+
+            else
+                updateTime
 
         ( Msg.MouseMove e, Model.Booting bm ) ->
             mouseMove e.pagePos bm |> Tuple.mapFirst Model.Booting
@@ -98,6 +119,7 @@ boot m =
                 , rows = rows
                 , cols = cols
                 , screen = Array.empty
+                , more = True
                 }
 
         ( _, _ ) ->
