@@ -9,7 +9,7 @@ expectTupleWithin tolerance ( expectedFirst, expectedSecond ) actual =
         expectFirst =
             Expect.within tolerance expectedFirst << Tuple.first
 
-        expectSecond a =
+        expectSecond =
             Expect.within tolerance expectedSecond << Tuple.second
     in
     Expect.all [ expectFirst, expectSecond ] actual

@@ -5,6 +5,7 @@ import PlayElm.Model as Model
 import PlayElm.Msg as Msg
 import PlayElm.Port as Port
 import PlayElm.Programs.Balls as Balls
+import PlayElm.Programs.LineTenPrint as LineTenPrint
 import PlayElm.Types as Types
 import PlayElm.Util as Util
 import Time as Time
