@@ -1,4 +1,4 @@
-module PlayElm.Programs.Balls exposing (run)
+module PlayElm.Programs.Balls exposing (run, transform)
 
 import PlayElm.Modules.Num as Num
 import PlayElm.Modules.Sdf as Sdf
@@ -44,7 +44,7 @@ run : Types.Context -> Int -> Int -> String
 run context x y =
     let
         t =
-            (context.time * 0.001) + 10
+            context.time * 0.001 + 10
 
         m =
             min context.cols context.rows |> toFloat
@@ -53,10 +53,10 @@ run context x y =
             context.aspect
 
         stX =
-            2.0 * ((toFloat x - (toFloat context.cols / 2.0)) / m) * a
+            2.0 * (toFloat x - toFloat context.cols / 2.0) / m * a
 
         stY =
-            2.0 * (toFloat y - (toFloat context.rows / 2.0)) / m
+            2.0 * (toFloat y - toFloat context.rows / 2.0) / m
 
         s =
             Num.map (sin (t * 0.5)) -1 1 0.0 0.9
@@ -65,10 +65,10 @@ run context x y =
             Num.map (cos (t * 0.95 * (i + 1) / (num + 1))) -1 1 0.1 0.3
 
         dX num i =
-            Num.map (cos (t * 0.23 * ((i / num) * (pi + pi)))) -1 1 -1.2 1.2
+            Num.map (cos (t * 0.23 * (i / num * pi + pi))) -1 1 -1.2 1.2
 
         dY num i =
-            Num.map (sin (t * 0.37 * ((i / num) * (pi + pi)))) -1 1 -1.2 1.2
+            Num.map (sin (t * 0.37 * (i / num * pi + pi))) -1 1 -1.2 1.2
 
         dF num i =
             transform ( stX, stY ) ( dX num i, dY num i ) t
