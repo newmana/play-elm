@@ -32,10 +32,10 @@ transform ( pX, pY ) ( transX, transY ) rot =
             pY - transY
 
         newX =
-            (dx * c) - (dy * s)
+            dx * c - dy * s
 
         newY =
-            (dx * s) - (dy * c)
+            dx * s + dy * c
     in
     ( newX, newY )
 
