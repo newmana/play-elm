@@ -15,8 +15,8 @@ import Time as Time
 update : Msg.Msg -> Model.Model -> ( Model.Model, Cmd Msg.Msg )
 update msg model =
     case ( msg, model ) of
-        ( Msg.Tick newTime, Model.Booting bm ) ->
-            tick newTime bm |> Tuple.mapFirst Model.Booting
+        ( Msg.Tick newTime, (Model.Booting _) as bm ) ->
+            ( Model.tick newTime bm, Port.getBoundingClientRect Model.elementId )
 
         ( Msg.GenerateMaze row st, Model.Running rm ) ->
             let
@@ -30,35 +30,41 @@ update msg model =
                 ( Model.Running newRm, Random.generate (Msg.GenerateMaze (row - 1)) (LineTenPrint.generateMaze rm.cols) )
 
             else
-                ( Model.Running { newRm | more = False }, Port.getBoundingClientRect Model.elementId )
+                ( Model.Running { newRm | running = False }, Port.getBoundingClientRect Model.elementId )
 
-        ( Msg.Tick newTime, Model.Running rm ) ->
+        ( Msg.GenerateBalls, Model.Running rm ) ->
             let
-                --context =
-                --    { time = rm.time
-                --    , cols = rm.cols
-                --    , rows = rm.rows
-                --    , width = rm.clientRect.width
-                --    , height = rm.clientRect.height
-                --    , aspect = rm.aspect
-                --    }
-                --
-                --row rowNum =
-                --    List.foldl (\colNum str -> str ++ Balls.run context colNum rowNum) "" (List.range 0 (rm.cols - 1))
-                --
-                --newScreen =
-                --    List.foldl (\rowNum -> Array.push (row rowNum)) Array.empty (List.range 0 (rm.rows - 1))
-                --
-                --newRm =
-                --    { rm | screen = newScreen }
-                updateTime =
-                    tick newTime rm |> Tuple.mapFirst Model.Running
+                context =
+                    { time = rm.time
+                    , cols = rm.cols
+                    , rows = rm.rows
+                    , width = rm.clientRect.width
+                    , height = rm.clientRect.height
+                    , aspect = rm.aspect
+                    }
+
+                row rowNum =
+                    List.foldl (\colNum str -> str ++ Balls.run context colNum rowNum) "" (List.range 0 (rm.cols - 1))
+
+                newScreen =
+                    List.foldl (\rowNum -> Array.push (row rowNum)) Array.empty (List.range 0 (rm.rows - 1))
+
+                newRm =
+                    { rm | screen = newScreen }
             in
-            if rm.more then
-                ( Model.Running rm, Random.generate (Msg.GenerateMaze rm.rows) (LineTenPrint.generateMaze rm.cols) )
+            ( Model.Running newRm, Cmd.none )
+
+        ( Msg.Tick newTime, (Model.Running rmm) as rm ) ->
+            if rmm.running then
+                ( rm, Random.generate (Msg.GenerateMaze rmm.rows) (LineTenPrint.generateMaze rmm.cols) )
+                --let
+                --    ( newM, newMsg ) =
+                --        update Msg.GenerateBalls rm
+                --in
+                --( Model.tick newTime newM, Port.getBoundingClientRect Model.elementId )
 
             else
-                updateTime
+                ( Model.tick newTime rm, Port.getBoundingClientRect Model.elementId )
 
         ( Msg.MouseMove e, Model.Booting bm ) ->
             mouseMove e.pagePos bm |> Tuple.mapFirst Model.Booting
@@ -89,11 +95,6 @@ timeToFloat t =
     Time.posixToMillis t |> toFloat
 
 
-tick : Float -> Model.CommonProperties a -> ( Model.CommonProperties a, Cmd msg )
-tick delta m =
-    ( { m | time = m.time + delta }, Port.getBoundingClientRect Model.elementId )
-
-
 mouseMove : ( Float, Float ) -> Model.CommonProperties a -> ( Model.CommonProperties a, Cmd msg )
 mouseMove pos m =
     ( { m | pointer = pos }, Cmd.none )
@@ -119,7 +120,7 @@ boot m =
                 , rows = rows
                 , cols = cols
                 , screen = Array.empty
-                , more = True
+                , running = True
                 }
 
         ( _, _ ) ->

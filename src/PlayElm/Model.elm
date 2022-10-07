@@ -5,6 +5,7 @@ module PlayElm.Model exposing
     , RunningModel
     , defaultModel
     , elementId
+    , tick
     )
 
 import Array as Array
@@ -46,7 +47,7 @@ type alias RunningModel =
         , cols : Int
         , rows : Int
         , screen : Array.Array String
-        , more : Bool
+        , running : Bool
         }
 
 
@@ -57,3 +58,17 @@ defaultModel =
     , clientRect = Nothing
     , computedStyle = Nothing
     }
+
+
+tick : Float -> Model -> Model
+tick delta m =
+    let
+        updateTime anyM =
+            { anyM | time = anyM.time + delta }
+    in
+    case m of
+        Booting bm ->
+            updateTime bm |> Booting
+
+        Running rm ->
+            updateTime rm |> Running
