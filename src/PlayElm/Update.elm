@@ -6,10 +6,9 @@ import PlayElm.Msg as Msg
 import PlayElm.Port as Port
 import PlayElm.Programs.Balls as Balls
 import PlayElm.Programs.Circle as Circle
-import PlayElm.Programs.LineTenPrint as LineTenPrint
+import PlayElm.Programs.LineTenPrintUpdate as LineTenPrintUpdate
 import PlayElm.Types as Types
 import PlayElm.Util as Util
-import Random as Random
 import Time as Time
 
 
@@ -20,18 +19,7 @@ update msg model =
             ( Model.tick newTime bm, Port.getBoundingClientRect Model.elementId )
 
         ( Msg.GenerateMaze row st, Model.Running rm ) ->
-            let
-                newScreen =
-                    Array.push st rm.screen
-
-                newRm =
-                    { rm | screen = newScreen }
-            in
-            if row > 0 then
-                ( Model.Running newRm, Random.generate (Msg.GenerateMaze (row - 1)) (LineTenPrint.generateMaze rm.cols) )
-
-            else
-                ( Model.Running { newRm | running = False }, Port.getBoundingClientRect Model.elementId )
+            LineTenPrintUpdate.step row st model
 
         ( Msg.GenerateBalls, Model.Running rm ) ->
             let
@@ -79,17 +67,13 @@ update msg model =
 
         ( Msg.Tick newTime, (Model.Running rmm) as rm ) ->
             if rmm.running then
+                LineTenPrintUpdate.update rm
                 --( rm, Random.generate (Msg.GenerateMaze rmm.rows) (LineTenPrint.generateMaze rmm.cols) )
                 --let
                 --    ( newM, newMsg ) =
-                --        update Msg.GenerateBalls rm
+                --        update Msg.GenerateCircle rm
                 --in
                 --( Model.tick newTime newM, Port.getBoundingClientRect Model.elementId )
-                let
-                    ( newM, newMsg ) =
-                        update Msg.GenerateCircle rm
-                in
-                ( Model.tick newTime newM, Port.getBoundingClientRect Model.elementId )
 
             else
                 ( Model.tick newTime rm, Port.getBoundingClientRect Model.elementId )
