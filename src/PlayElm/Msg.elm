@@ -10,6 +10,7 @@ type Msg
     | Tick Float
     | GenerateMaze Int String
     | GenerateBalls
+    | GenerateCircle
     | SetBoundingClientRect (Maybe Types.BoundingClientRect)
     | SetComputedStyle (Maybe Types.ComputedStyle)
     | Nothing

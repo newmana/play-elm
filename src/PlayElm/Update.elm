@@ -5,6 +5,7 @@ import PlayElm.Model as Model
 import PlayElm.Msg as Msg
 import PlayElm.Port as Port
 import PlayElm.Programs.Balls as Balls
+import PlayElm.Programs.Circle as Circle
 import PlayElm.Programs.LineTenPrint as LineTenPrint
 import PlayElm.Types as Types
 import PlayElm.Util as Util
@@ -54,14 +55,41 @@ update msg model =
             in
             ( Model.Running newRm, Cmd.none )
 
+        ( Msg.GenerateCircle, Model.Running rm ) ->
+            let
+                context =
+                    { time = rm.time
+                    , cols = rm.cols
+                    , rows = rm.rows
+                    , width = rm.clientRect.width
+                    , height = rm.clientRect.height
+                    , aspect = rm.aspect
+                    }
+
+                row rowNum =
+                    List.foldl (\colNum str -> str ++ Circle.run context colNum rowNum) "" (List.range 0 (rm.cols - 1))
+
+                newScreen =
+                    List.foldl (\rowNum -> Array.push (row rowNum)) Array.empty (List.range 0 (rm.rows - 1))
+
+                newRm =
+                    { rm | screen = newScreen }
+            in
+            ( Model.Running newRm, Cmd.none )
+
         ( Msg.Tick newTime, (Model.Running rmm) as rm ) ->
             if rmm.running then
-                ( rm, Random.generate (Msg.GenerateMaze rmm.rows) (LineTenPrint.generateMaze rmm.cols) )
+                --( rm, Random.generate (Msg.GenerateMaze rmm.rows) (LineTenPrint.generateMaze rmm.cols) )
                 --let
                 --    ( newM, newMsg ) =
                 --        update Msg.GenerateBalls rm
                 --in
                 --( Model.tick newTime newM, Port.getBoundingClientRect Model.elementId )
+                let
+                    ( newM, newMsg ) =
+                        update Msg.GenerateCircle rm
+                in
+                ( Model.tick newTime newM, Port.getBoundingClientRect Model.elementId )
 
             else
                 ( Model.tick newTime rm, Port.getBoundingClientRect Model.elementId )

@@ -11,11 +11,6 @@ chars =
     "#ABC|/:÷×+-=?*· "
 
 
-tau : Float
-tau =
-    pi * 2
-
-
 transform : ( Float, Float ) -> ( Float, Float ) -> Float -> ( Float, Float )
 transform ( pX, pY ) ( transX, transY ) rot =
     let
