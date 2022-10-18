@@ -35,7 +35,7 @@ transform ( pX, pY ) ( transX, transY ) rot =
     ( newX, newY )
 
 
-run : Types.Context -> Int -> Int -> String
+run : Types.Runnable
 run context x y =
     let
         t =

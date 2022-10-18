@@ -1,4 +1,4 @@
-module PlayElm.Types exposing (BoundingClientRect, ComputedStyle, Context)
+module PlayElm.Types exposing (BoundingClientRect, ComputedStyle, Config, Context, Runnable)
 
 import Time as Time
 
@@ -30,4 +30,13 @@ type alias Context =
     , width : Float
     , height : Float
     , aspect : Float
+    }
+
+
+type alias Runnable =
+    Context -> Int -> Int -> String
+
+
+type alias Config =
+    { runner : Runnable
     }

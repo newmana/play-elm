@@ -48,6 +48,7 @@ type alias RunningModel =
         , rows : Int
         , screen : Array.Array String
         , running : Bool
+        , config : Types.Config
         }
 
 

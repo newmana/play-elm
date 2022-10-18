@@ -7,6 +7,7 @@ import PlayElm.Port as Port
 import PlayElm.Programs.Balls as Balls
 import PlayElm.Programs.Circle as Circle
 import PlayElm.Programs.LineTenPrintUpdate as LineTenPrintUpdate
+import PlayElm.Programs.Update as Update
 import PlayElm.Types as Types
 import PlayElm.Util as Util
 import Time as Time
@@ -18,62 +19,25 @@ update msg model =
         ( Msg.Tick newTime, (Model.Booting _) as bm ) ->
             ( Model.tick newTime bm, Port.getBoundingClientRect Model.elementId )
 
-        ( Msg.GenerateMaze row st, Model.Running rm ) ->
-            LineTenPrintUpdate.step row st model
-
-        ( Msg.GenerateBalls, Model.Running rm ) ->
-            let
-                context =
-                    { time = rm.time
-                    , cols = rm.cols
-                    , rows = rm.rows
-                    , width = rm.clientRect.width
-                    , height = rm.clientRect.height
-                    , aspect = rm.aspect
-                    }
-
-                row rowNum =
-                    List.foldl (\colNum str -> str ++ Balls.run context colNum rowNum) "" (List.range 0 (rm.cols - 1))
-
-                newScreen =
-                    List.foldl (\rowNum -> Array.push (row rowNum)) Array.empty (List.range 0 (rm.rows - 1))
-
-                newRm =
-                    { rm | screen = newScreen }
-            in
-            ( Model.Running newRm, Cmd.none )
-
-        ( Msg.GenerateCircle, Model.Running rm ) ->
-            let
-                context =
-                    { time = rm.time
-                    , cols = rm.cols
-                    , rows = rm.rows
-                    , width = rm.clientRect.width
-                    , height = rm.clientRect.height
-                    , aspect = rm.aspect
-                    }
-
-                row rowNum =
-                    List.foldl (\colNum str -> str ++ Circle.run context colNum rowNum) "" (List.range 0 (rm.cols - 1))
-
-                newScreen =
-                    List.foldl (\rowNum -> Array.push (row rowNum)) Array.empty (List.range 0 (rm.rows - 1))
-
-                newRm =
-                    { rm | screen = newScreen }
-            in
-            ( Model.Running newRm, Cmd.none )
+        ( Msg.GenerateMaze row newLine, Model.Running rm ) ->
+            LineTenPrintUpdate.step row newLine model
 
         ( Msg.Tick newTime, (Model.Running rmm) as rm ) ->
             if rmm.running then
-                LineTenPrintUpdate.update rm
+                --( model, Cmd.none )
+                --    |> Util.andThen
+                --        LineTenPrintUpdate.updateWithMsg
                 --( rm, Random.generate (Msg.GenerateMaze rmm.rows) (LineTenPrint.generateMaze rmm.cols) )
                 --let
                 --    ( newM, newMsg ) =
                 --        update Msg.GenerateCircle rm
                 --in
                 --( Model.tick newTime newM, Port.getBoundingClientRect Model.elementId )
+                ( model, Cmd.none )
+                    |> Util.andThen
+                        (Update.updateWithMsg rmm.config)
+                    |> Util.andThen
+                        (Update.step rmm.config newTime)
 
             else
                 ( Model.tick newTime rm, Port.getBoundingClientRect Model.elementId )
@@ -133,6 +97,7 @@ boot m =
                 , cols = cols
                 , screen = Array.empty
                 , running = True
+                , config = { runner = Circle.run }
                 }
 
         ( _, _ ) ->

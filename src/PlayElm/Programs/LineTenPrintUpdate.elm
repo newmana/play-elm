@@ -8,8 +8,8 @@ import PlayElm.Programs.LineTenPrint as LineTenPrint
 import Random as Random
 
 
-update : Model.Model -> ( Model.Model, Cmd Msg.Msg )
-update model =
+updateWithMsg : Model.Model -> ( Model.Model, Cmd Msg.Msg )
+updateWithMsg model =
     case model of
         (Model.Running rmm) as rm ->
             ( rm, Random.generate (Msg.GenerateMaze rmm.rows) (LineTenPrint.generateMaze rmm.cols) )
@@ -19,12 +19,12 @@ update model =
 
 
 step : Int -> String -> Model.Model -> ( Model.Model, Cmd Msg.Msg )
-step row st model =
+step row newLine model =
     case model of
         (Model.Running rmm) as rm ->
             let
                 newScreen =
-                    Array.push st rmm.screen
+                    Array.push newLine rmm.screen
 
                 newRm =
                     { rmm | screen = newScreen }

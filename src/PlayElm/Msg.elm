@@ -9,8 +9,6 @@ type Msg
     = MouseMove MouseEvent.Event
     | Tick Float
     | GenerateMaze Int String
-    | GenerateBalls
-    | GenerateCircle
     | SetBoundingClientRect (Maybe Types.BoundingClientRect)
     | SetComputedStyle (Maybe Types.ComputedStyle)
     | Nothing
