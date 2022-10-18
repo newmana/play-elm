@@ -6,10 +6,12 @@ import PlayElm.Msg as Msg
 import PlayElm.Port as Port
 import PlayElm.Programs.Balls as Balls
 import PlayElm.Programs.Circle as Circle
+import PlayElm.Programs.LineTenPrint as LineTenPrint
 import PlayElm.Programs.LineTenPrintUpdate as LineTenPrintUpdate
 import PlayElm.Programs.Update as Update
 import PlayElm.Types as Types
 import PlayElm.Util as Util
+import Random as Random
 import Time as Time
 
 
@@ -24,20 +26,14 @@ update msg model =
 
         ( Msg.Tick newTime, (Model.Running rmm) as rm ) ->
             if rmm.running then
-                --( model, Cmd.none )
-                --    |> Util.andThen
-                --        LineTenPrintUpdate.updateWithMsg
-                --( rm, Random.generate (Msg.GenerateMaze rmm.rows) (LineTenPrint.generateMaze rmm.cols) )
-                --let
-                --    ( newM, newMsg ) =
-                --        update Msg.GenerateCircle rm
-                --in
-                --( Model.tick newTime newM, Port.getBoundingClientRect Model.elementId )
                 ( model, Cmd.none )
                     |> Util.andThen
-                        (Update.updateWithMsg rmm.config)
-                    |> Util.andThen
-                        (Update.step rmm.config newTime)
+                        LineTenPrintUpdate.updateWithMsg
+                --( model, Cmd.none )
+                --    |> Util.andThen
+                --        (Update.updateWithMsg rmm.config)
+                --    |> Util.andThen
+                --        (Update.step rmm.config newTime)
 
             else
                 ( Model.tick newTime rm, Port.getBoundingClientRect Model.elementId )
