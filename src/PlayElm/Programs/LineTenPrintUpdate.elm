@@ -7,6 +7,7 @@ import PlayElm.Port as Port
 import PlayElm.Programs.LineTenPrint as LineTenPrint
 import PlayElm.Types as Types
 import Random as Random
+import String.Extra as StringExtra
 
 
 step : Float -> Types.Context -> ( Types.Context, Cmd Msg.Msg )
@@ -18,9 +19,9 @@ updateWithMsg : Types.Context -> ( Types.Context, Cmd Msg.Msg )
 updateWithMsg context =
     let
         newScreen =
-            Array.push context.doers.generatedValue context.screen
+            StringExtra.break context.cols context.doers.generatedValue |> Array.fromList
 
         newRm =
-            { context | screen = newScreen }
+            { context | screen = newScreen, running = False }
     in
     ( newRm, Port.getBoundingClientRect Model.elementId )

@@ -1,4 +1,13 @@
-module PlayElm.Types exposing (BoundingClientRect, CommonContext, CommonProperties, ComputedStyle, Context, Doers, Runnable)
+module PlayElm.Types exposing
+    ( BoundingClientRect
+    , CommonContext
+    , CommonProperties
+    , ComputedStyle
+    , Context
+    , Doers
+    , Runnable
+    , idRunner
+    )
 
 import Array as Array
 import Random as Random
@@ -53,6 +62,11 @@ type alias Context =
 
 type alias Runnable =
     CommonContext {} -> CommonContext {}
+
+
+idRunner : Runnable
+idRunner context =
+    context
 
 
 type alias Doers =

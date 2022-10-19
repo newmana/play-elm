@@ -6,11 +6,6 @@ import Random.Char as RandomChar
 import Random.String as RandomString
 
 
-run : Types.Runnable
-run context =
-    { context | running = False }
-
-
 generateMaze : Int -> Random.Generator String
 generateMaze number =
     RandomString.string number generateSlash

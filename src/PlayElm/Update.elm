@@ -38,7 +38,20 @@ update msg model =
 
         ( Msg.RandomString str, Model.Executing emm ) ->
             if emm.context.running then
-                emm.config.updateWithMsg emm.context |> toModel emm Model.Running
+                let
+                    getContext =
+                        emm.context
+
+                    getDoers =
+                        getContext.doers
+
+                    newDoers =
+                        { getDoers | generatedValue = str }
+
+                    newContext =
+                        { getContext | doers = newDoers }
+                in
+                emm.config.updateWithMsg newContext |> toModel emm Model.Running
 
             else
                 ( model, Port.getBoundingClientRect Model.elementId )
@@ -99,15 +112,15 @@ boot m =
                     , screen = Array.empty
                     , running = True
                     , doers =
-                        { runner = Circle.run
+                        { runner = Types.idRunner
                         , generator = LineTenPrint.generateMaze
                         , generatedValue = ""
                         }
                     }
 
                 config =
-                    { updateWithMsg = Update.updateWithMsg
-                    , step = Update.step
+                    { updateWithMsg = LineTenPrintUpdate.updateWithMsg
+                    , step = LineTenPrintUpdate.step
                     }
             in
             Model.Running
