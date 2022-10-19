@@ -1,8 +1,6 @@
 module PlayElm.Model exposing
     ( BootingModel
-    , CommonProperties
     , Config
-    , Context
     , Model(..)
     , RunningModel
     , defaultModel
@@ -22,13 +20,6 @@ elementId =
     "play"
 
 
-type alias CommonProperties a =
-    { a
-        | pointer : ( Float, Float )
-        , time : Float
-    }
-
-
 type Model
     = Booting BootingModel
     | Running RunningModel
@@ -36,34 +27,21 @@ type Model
 
 
 type alias BootingModel =
-    CommonProperties
+    Types.CommonProperties
         { clientRect : Maybe Types.BoundingClientRect
         , computedStyle : Maybe Types.ComputedStyle
         }
 
 
 type alias RunningModel =
-    { context : Context
+    { context : Types.Context
     , config : Config Types.Doers Msg.Msg
     }
 
 
-type alias Context =
-    CommonProperties
-        { clientRect : Types.BoundingClientRect
-        , computedStyle : Types.ComputedStyle
-        , aspect : Float
-        , cols : Int
-        , rows : Int
-        , screen : Array.Array String
-        , running : Bool
-        , doers : Types.Doers
-        }
-
-
 type alias Config a b =
-    { updateWithMsg : a -> Context -> ( Context, Cmd b )
-    , step : a -> Float -> Context -> ( Context, Cmd b )
+    { updateWithMsg : a -> Types.Context -> ( Types.Context, Cmd b )
+    , step : a -> Float -> Types.Context -> ( Types.Context, Cmd b )
     }
 
 
@@ -76,6 +54,6 @@ defaultModel =
     }
 
 
-tick : Float -> CommonProperties a -> CommonProperties a
+tick : Float -> Types.CommonProperties a -> Types.CommonProperties a
 tick delta anyM =
     { anyM | time = anyM.time + delta }

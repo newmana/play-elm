@@ -8,6 +8,7 @@ import Time as Time
 type Msg
     = MouseMove MouseEvent.Event
     | Tick Float
+    | RandomString String
     | SetBoundingClientRect (Maybe Types.BoundingClientRect)
     | SetComputedStyle (Maybe Types.ComputedStyle)
     | Nothing

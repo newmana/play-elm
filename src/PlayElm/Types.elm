@@ -1,5 +1,6 @@
-module PlayElm.Types exposing (BoundingClientRect, ComputedStyle, Context, Doers, Runnable)
+module PlayElm.Types exposing (BoundingClientRect, CommonContext, CommonProperties, ComputedStyle, Context, Doers, Runnable)
 
+import Array as Array
 import Random as Random
 import Time as Time
 
@@ -24,21 +25,38 @@ type alias ComputedStyle =
     }
 
 
-type alias Context =
-    { time : Float
-    , cols : Int
-    , rows : Int
-    , width : Float
-    , height : Float
-    , aspect : Float
+type alias CommonProperties a =
+    { a
+        | pointer : ( Float, Float )
+        , time : Float
     }
 
 
+type alias CommonContext a =
+    CommonProperties
+        { a
+            | clientRect : BoundingClientRect
+            , computedStyle : ComputedStyle
+            , aspect : Float
+            , cols : Int
+            , rows : Int
+            , screen : Array.Array String
+            , running : Bool
+        }
+
+
+type alias Context =
+    CommonContext
+        { doers : Doers
+        }
+
+
 type alias Runnable =
-    Context -> Int -> Int -> String
+    CommonContext {} -> CommonContext {}
 
 
 type alias Doers =
     { runner : Runnable
     , generator : Int -> Random.Generator String
+    , generatedValue : String
     }

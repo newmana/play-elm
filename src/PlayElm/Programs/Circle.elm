@@ -1,5 +1,6 @@
 module PlayElm.Programs.Circle exposing (..)
 
+import Array as Array
 import PlayElm.Modules.Sdf as Sdf
 import PlayElm.Types as Types
 
@@ -10,7 +11,19 @@ chars =
 
 
 run : Types.Runnable
-run context x y =
+run context =
+    let
+        row rowNum =
+            List.foldl (\colNum str -> str ++ runLine context colNum rowNum) "" (List.range 0 (context.cols - 1))
+
+        newScreen =
+            List.foldl (\rowNum -> Array.push (row rowNum)) Array.empty (List.range 0 (context.rows - 1))
+    in
+    { context | screen = newScreen }
+
+
+runLine : Types.CommonContext {} -> Int -> Int -> String
+runLine context x y =
     let
         t =
             context.time * 0.002

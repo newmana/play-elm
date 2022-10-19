@@ -1,8 +1,14 @@
 module PlayElm.Programs.LineTenPrint exposing (..)
 
+import PlayElm.Types as Types
 import Random as Random
 import Random.Char as RandomChar
 import Random.String as RandomString
+
+
+run : Types.Runnable
+run context =
+    { context | running = False }
 
 
 generateMaze : Int -> Random.Generator String

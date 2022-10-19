@@ -1,5 +1,6 @@
 module PlayElm.Programs.Balls exposing (run, transform)
 
+import Array as Array
 import PlayElm.Modules.Num as Num
 import PlayElm.Modules.Sdf as Sdf
 import PlayElm.Types as Types
@@ -11,32 +12,20 @@ chars =
     "#ABC|/:÷×+-=?*· "
 
 
-transform : ( Float, Float ) -> ( Float, Float ) -> Float -> ( Float, Float )
-transform ( pX, pY ) ( transX, transY ) rot =
-    let
-        s =
-            sin -rot
-
-        c =
-            cos -rot
-
-        dx =
-            pX - transX
-
-        dy =
-            pY - transY
-
-        newX =
-            dx * c - dy * s
-
-        newY =
-            dx * s + dy * c
-    in
-    ( newX, newY )
-
-
 run : Types.Runnable
-run context x y =
+run context =
+    let
+        row rowNum =
+            List.foldl (\colNum str -> str ++ runLine context colNum rowNum) "" (List.range 0 (context.cols - 1))
+
+        newScreen =
+            List.foldl (\rowNum -> Array.push (row rowNum)) Array.empty (List.range 0 (context.rows - 1))
+    in
+    { context | screen = newScreen }
+
+
+runLine : Types.CommonContext {} -> Int -> Int -> String
+runLine context x y =
     let
         t =
             context.time * 0.001 + 10
@@ -87,3 +76,27 @@ run context x y =
             floor (c * (String.length chars |> toFloat))
     in
     String.slice charsIndex (charsIndex + 1) chars
+
+
+transform : ( Float, Float ) -> ( Float, Float ) -> Float -> ( Float, Float )
+transform ( pX, pY ) ( transX, transY ) rot =
+    let
+        s =
+            sin -rot
+
+        c =
+            cos -rot
+
+        dx =
+            pX - transX
+
+        dy =
+            pY - transY
+
+        newX =
+            dx * c - dy * s
+
+        newY =
+            dx * s + dy * c
+    in
+    ( newX, newY )

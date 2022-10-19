@@ -36,6 +36,13 @@ update msg model =
             else
                 ( Model.tick newTime emm.context, Port.getBoundingClientRect Model.elementId ) |> toModel emm Model.Running
 
+        ( Msg.RandomString str, Model.Executing emm ) ->
+            if emm.context.running then
+                Update.updateWithMsg emm.context.doers emm.context |> toModel emm Model.Running
+
+            else
+                ( model, Port.getBoundingClientRect Model.elementId )
+
         ( Msg.MouseMove e, Model.Booting bm ) ->
             mouseMove e.pagePos bm |> Tuple.mapFirst Model.Booting
 
@@ -65,7 +72,7 @@ timeToFloat t =
     Time.posixToMillis t |> toFloat
 
 
-mouseMove : ( Float, Float ) -> Model.CommonProperties a -> ( Model.CommonProperties a, Cmd msg )
+mouseMove : ( Float, Float ) -> Types.CommonProperties a -> ( Types.CommonProperties a, Cmd msg )
 mouseMove pos m =
     ( { m | pointer = pos }, Cmd.none )
 
@@ -94,6 +101,7 @@ boot m =
                     , doers =
                         { runner = Circle.run
                         , generator = LineTenPrint.generateMaze
+                        , generatedValue = ""
                         }
                     }
 
@@ -111,6 +119,6 @@ boot m =
             Model.Booting m
 
 
-toModel : Model.RunningModel -> (Model.RunningModel -> Model.Model) -> (( Model.Context, b ) -> ( Model.Model, b ))
+toModel : Model.RunningModel -> (Model.RunningModel -> Model.Model) -> (( Types.Context, b ) -> ( Model.Model, b ))
 toModel emm m =
     Tuple.mapFirst (\x -> { emm | context = x } |> m)
