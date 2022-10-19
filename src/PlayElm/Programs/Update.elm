@@ -9,7 +9,7 @@ import PlayElm.Programs.Balls as Balls
 import PlayElm.Types as Types
 
 
-updateWithMsg : Types.Config -> Model.Model -> ( Model.Model, Cmd Msg.Msg )
+updateWithMsg : Types.Doers -> Model.Model -> ( Model.Model, Cmd Msg.Msg )
 updateWithMsg config model =
     case model of
         (Model.Running rmm) as rm ->
@@ -38,6 +38,6 @@ updateWithMsg config model =
             ( model, Port.getBoundingClientRect Model.elementId )
 
 
-step : Types.Config -> Float -> Model.Model -> ( Model.Model, Cmd Msg.Msg )
+step : Types.Doers -> Float -> Model.Model -> ( Model.Model, Cmd Msg.Msg )
 step _ newTime model =
     ( Model.tick newTime model, Port.getBoundingClientRect Model.elementId )

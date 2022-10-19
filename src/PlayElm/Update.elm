@@ -26,14 +26,14 @@ update msg model =
 
         ( Msg.Tick newTime, (Model.Running rmm) as rm ) ->
             if rmm.running then
-                ( model, Cmd.none )
-                    |> Util.andThen
-                        LineTenPrintUpdate.updateWithMsg
                 --( model, Cmd.none )
                 --    |> Util.andThen
-                --        (Update.updateWithMsg rmm.config)
-                --    |> Util.andThen
-                --        (Update.step rmm.config newTime)
+                --        LineTenPrintUpdate.updateWithMsg
+                ( model, Cmd.none )
+                    |> Util.andThen
+                        (Update.step rmm.doers newTime)
+                    |> Util.andThen
+                        (Update.updateWithMsg rmm.doers)
 
             else
                 ( Model.tick newTime rm, Port.getBoundingClientRect Model.elementId )
@@ -93,7 +93,14 @@ boot m =
                 , cols = cols
                 , screen = Array.empty
                 , running = True
-                , config = { runner = Circle.run }
+                , doers =
+                    { runner = Circle.run
+                    , generator = LineTenPrint.generateMaze
+                    }
+                , config =
+                    { updateWithMsg = Update.updateWithMsg
+                    , step = Update.step
+                    }
                 }
 
         ( _, _ ) ->
