@@ -24,29 +24,23 @@ update msg model =
 
         ( Msg.Tick newTime, Model.Running rmm ) ->
             if rmm.context.running then
-                --( model, Cmd.none )
-                --    |> Util.andThen
-                --        LineTenPrintUpdate.updateWithMsg
-                Update.step rmm.context.doers newTime rmm.context |> Tuple.mapFirst (\x -> { rmm | context = x } |> Model.Executing)
+                Update.step rmm.context.doers newTime rmm.context |> toRunning rmm Model.Executing
 
             else
-                ( Model.tick newTime rmm.context, Port.getBoundingClientRect Model.elementId ) |> Tuple.mapFirst (\x -> { rmm | context = x } |> Model.Executing)
+                ( Model.tick newTime rmm.context, Port.getBoundingClientRect Model.elementId ) |> toRunning rmm Model.Executing
 
         ( Msg.Tick newTime, Model.Executing emm ) ->
             if emm.context.running then
-                --( model, Cmd.none )
-                --    |> Util.andThen
-                --        LineTenPrintUpdate.updateWithMsg
-                Update.updateWithMsg emm.context.doers emm.context |> Tuple.mapFirst (\x -> { emm | context = x } |> Model.Running)
+                Update.updateWithMsg emm.context.doers emm.context |> toRunning emm Model.Running
 
             else
-                ( Model.tick newTime emm.context, Port.getBoundingClientRect Model.elementId ) |> Tuple.mapFirst (\x -> { emm | context = x } |> Model.Running)
+                ( Model.tick newTime emm.context, Port.getBoundingClientRect Model.elementId ) |> toRunning emm Model.Running
 
         ( Msg.MouseMove e, Model.Booting bm ) ->
             mouseMove e.pagePos bm |> Tuple.mapFirst Model.Booting
 
         ( Msg.MouseMove e, Model.Running rm ) ->
-            mouseMove e.pagePos rm.context |> Tuple.mapFirst (\x -> { rm | context = x } |> Model.Running)
+            mouseMove e.pagePos rm.context |> toRunning rm Model.Running
 
         ( Msg.SetBoundingClientRect r, Model.Booting bm ) ->
             let
@@ -115,3 +109,8 @@ boot m =
 
         ( _, _ ) ->
             Model.Booting m
+
+
+toRunning : Model.RunningModel -> (Model.RunningModel -> Model.Model) -> (( Model.Context, b ) -> ( Model.Model, b ))
+toRunning emm m =
+    Tuple.mapFirst (\x -> { emm | context = x } |> m)
