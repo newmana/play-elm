@@ -1,6 +1,7 @@
 module PlayElm.Update exposing (update)
 
 import Array as Array
+import Dict as Dict
 import PlayElm.Model as Model
 import PlayElm.Msg as Msg
 import PlayElm.Port as Port
@@ -62,6 +63,12 @@ update msg model =
         ( Msg.MouseMove e, Model.Running rm ) ->
             mouseMove e.pagePos rm.context |> toModel rm Model.Running
 
+        ( Msg.RunProgram programName, Model.Running rm ) ->
+            ( runNewProgram programName rm |> Model.Running, Port.getBoundingClientRect Types.elementId )
+
+        ( Msg.RunProgram programName, Model.Executing em ) ->
+            ( runNewProgram programName em |> Model.Running, Port.getBoundingClientRect Types.elementId )
+
         ( Msg.SetBoundingClientRect r, Model.Booting bm ) ->
             let
                 newModel =
@@ -112,21 +119,22 @@ boot m =
                     , screen = Array.empty
                     , running = True
                     , doers =
-                        { runner = Types.idRunner
+                        { runner = Balls.run
                         , generator = LineTenPrint.generateMaze
                         , generatedValue = ""
                         }
                     }
 
                 config =
-                    { updateWithMsg = LineTenPrintUpdate.updateWithMsg
-                    , step = LineTenPrintUpdate.step
+                    { updateWithMsg = Update.updateWithMsg
+                    , step = Update.step
                     }
             in
             Model.Running
                 { context = context
                 , config = config
                 , programs = Model.programs
+                , programName = "Balls"
                 }
 
         ( _, _ ) ->
@@ -136,3 +144,17 @@ boot m =
 toModel : Model.RunningModel -> (Model.RunningModel -> Model.Model) -> (( Types.Context, b ) -> ( Model.Model, b ))
 toModel emm m =
     Tuple.mapFirst (\x -> { emm | context = x } |> m)
+
+
+runNewProgram : String -> Model.RunningModel -> Model.RunningModel
+runNewProgram programName rm =
+    let
+        newPrograms =
+            Dict.get programName rm.programs
+    in
+    case newPrograms of
+        Just p ->
+            Model.changeProgram rm p programName
+
+        Nothing ->
+            rm

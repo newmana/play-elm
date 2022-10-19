@@ -1,8 +1,10 @@
 module PlayElm.View exposing (view)
 
 import Array as Array
+import Dict as Dict
 import Html as Html
 import Html.Attributes as HtmlAttributes
+import Html.Events as HtmlEvents
 import Html.Events.Extra.Mouse as MouseEvent
 import PlayElm.Model as Model
 import PlayElm.Msg as Msg
@@ -27,17 +29,42 @@ view model =
 
 viewPrograms : Model.Model -> List (Html.Html Msg.Msg)
 viewPrograms model =
-    [ Html.div []
-        [ Html.fieldset []
-            [ Html.input [ HtmlAttributes.type_ "radio" ] []
-            , Html.label [] [ Html.text "Hi" ]
-            , Html.input [ HtmlAttributes.type_ "radio" ] []
-            , Html.label [] [ Html.text "Hi" ]
-            , Html.input [ HtmlAttributes.type_ "radio" ] []
-            , Html.label [] [ Html.text "Hi" ]
+    let
+        radioButtons rm =
+            List.map
+                (\programName ->
+                    [ Html.input
+                        [ HtmlAttributes.type_ "radio"
+                        , HtmlEvents.onClick <| Msg.RunProgram programName
+                        , HtmlAttributes.checked (programName == rm.programName)
+                        ]
+                        []
+                    , Html.label [] [ Html.text programName ]
+                    , Html.br [] []
+                    ]
+                )
+                (Dict.keys rm.programs)
+                |> List.concat
+
+        buttons =
+            case model of
+                Model.Booting _ ->
+                    []
+
+                Model.Running rm ->
+                    radioButtons rm
+
+                Model.Executing em ->
+                    radioButtons em
+
+        html =
+            [ Html.div []
+                [ Html.fieldset []
+                    buttons
+                ]
             ]
-        ]
-    ]
+    in
+    html
 
 
 viewScreen : Model.Model -> List (Html.Html Msg.Msg)

@@ -2,6 +2,7 @@ module PlayElm.Model exposing
     ( BootingModel
     , Model(..)
     , RunningModel
+    , changeProgram
     , defaultModel
     , programs
     )
@@ -36,6 +37,7 @@ type alias RunningModel =
     { context : Types.Context
     , config : Types.Config Msg.Msg
     , programs : Dict.Dict String (Types.ProgramConfig Msg.Msg)
+    , programName : String
     }
 
 
@@ -80,6 +82,18 @@ programs =
             }
           )
         ]
+
+
+changeProgram : RunningModel -> Types.ProgramConfig Msg.Msg -> String -> RunningModel
+changeProgram rm p programName =
+    let
+        getContext =
+            rm.context
+
+        newContext =
+            { getContext | doers = p.doers, running = True }
+    in
+    { rm | config = p.config, context = newContext, programName = programName }
 
 
 defaultModel : BootingModel
