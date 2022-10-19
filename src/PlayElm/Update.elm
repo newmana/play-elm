@@ -13,36 +13,40 @@ import PlayElm.Types as Types
 import PlayElm.Util as Util
 import Random as Random
 import Time as Time
+import Tuple as Tuple
 
 
 update : Msg.Msg -> Model.Model -> ( Model.Model, Cmd Msg.Msg )
 update msg model =
     case ( msg, model ) of
-        ( Msg.Tick newTime, (Model.Booting _) as bm ) ->
-            ( Model.tick newTime bm, Port.getBoundingClientRect Model.elementId )
+        ( Msg.Tick newTime, Model.Booting bmm ) ->
+            ( Model.tick newTime bmm, Port.getBoundingClientRect Model.elementId ) |> Tuple.mapFirst Model.Booting
 
-        ( Msg.GenerateMaze row newLine, Model.Running rm ) ->
-            LineTenPrintUpdate.step row newLine model
-
-        ( Msg.Tick newTime, (Model.Running rmm) as rm ) ->
-            if rmm.running then
+        ( Msg.Tick newTime, Model.Running rmm ) ->
+            if rmm.context.running then
                 --( model, Cmd.none )
                 --    |> Util.andThen
                 --        LineTenPrintUpdate.updateWithMsg
-                ( model, Cmd.none )
-                    |> Util.andThen
-                        (Update.step rmm.doers newTime)
-                    |> Util.andThen
-                        (Update.updateWithMsg rmm.doers)
+                Update.step rmm.context.doers newTime rmm.context |> Tuple.mapFirst (\x -> { rmm | context = x } |> Model.Executing)
 
             else
-                ( Model.tick newTime rm, Port.getBoundingClientRect Model.elementId )
+                ( Model.tick newTime rmm.context, Port.getBoundingClientRect Model.elementId ) |> Tuple.mapFirst (\x -> { rmm | context = x } |> Model.Executing)
+
+        ( Msg.Tick newTime, Model.Executing emm ) ->
+            if emm.context.running then
+                --( model, Cmd.none )
+                --    |> Util.andThen
+                --        LineTenPrintUpdate.updateWithMsg
+                Update.updateWithMsg emm.context.doers emm.context |> Tuple.mapFirst (\x -> { emm | context = x } |> Model.Running)
+
+            else
+                ( Model.tick newTime emm.context, Port.getBoundingClientRect Model.elementId ) |> Tuple.mapFirst (\x -> { emm | context = x } |> Model.Running)
 
         ( Msg.MouseMove e, Model.Booting bm ) ->
             mouseMove e.pagePos bm |> Tuple.mapFirst Model.Booting
 
         ( Msg.MouseMove e, Model.Running rm ) ->
-            mouseMove e.pagePos rm |> Tuple.mapFirst Model.Running
+            mouseMove e.pagePos rm.context |> Tuple.mapFirst (\x -> { rm | context = x } |> Model.Running)
 
         ( Msg.SetBoundingClientRect r, Model.Booting bm ) ->
             let
@@ -82,25 +86,31 @@ boot m =
 
                 rows =
                     floor (cr.height / cs.lineHeight)
-            in
-            Model.Running
-                { pointer = m.pointer
-                , time = m.time
-                , clientRect = cr
-                , computedStyle = cs
-                , aspect = cs.cellWidth / cs.lineHeight
-                , rows = rows
-                , cols = cols
-                , screen = Array.empty
-                , running = True
-                , doers =
-                    { runner = Circle.run
-                    , generator = LineTenPrint.generateMaze
+
+                context =
+                    { pointer = m.pointer
+                    , time = m.time
+                    , clientRect = cr
+                    , computedStyle = cs
+                    , aspect = cs.cellWidth / cs.lineHeight
+                    , rows = rows
+                    , cols = cols
+                    , screen = Array.empty
+                    , running = True
+                    , doers =
+                        { runner = Circle.run
+                        , generator = LineTenPrint.generateMaze
+                        }
                     }
-                , config =
+
+                config =
                     { updateWithMsg = Update.updateWithMsg
                     , step = Update.step
                     }
+            in
+            Model.Running
+                { context = context
+                , config = config
                 }
 
         ( _, _ ) ->

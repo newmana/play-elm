@@ -1,6 +1,8 @@
 module PlayElm.Model exposing
     ( BootingModel
     , CommonProperties
+    , Config
+    , Context
     , Model(..)
     , RunningModel
     , defaultModel
@@ -30,6 +32,7 @@ type alias CommonProperties a =
 type Model
     = Booting BootingModel
     | Running RunningModel
+    | Executing RunningModel
 
 
 type alias BootingModel =
@@ -40,6 +43,12 @@ type alias BootingModel =
 
 
 type alias RunningModel =
+    { context : Context
+    , config : Config Types.Doers Msg.Msg
+    }
+
+
+type alias Context =
     CommonProperties
         { clientRect : Types.BoundingClientRect
         , computedStyle : Types.ComputedStyle
@@ -49,8 +58,13 @@ type alias RunningModel =
         , screen : Array.Array String
         , running : Bool
         , doers : Types.Doers
-        , config : Types.Config Types.Doers Model Msg.Msg
         }
+
+
+type alias Config a b =
+    { updateWithMsg : a -> Context -> ( Context, Cmd b )
+    , step : a -> Float -> Context -> ( Context, Cmd b )
+    }
 
 
 defaultModel : BootingModel
@@ -62,15 +76,6 @@ defaultModel =
     }
 
 
-tick : Float -> Model -> Model
-tick delta m =
-    let
-        updateTime anyM =
-            { anyM | time = anyM.time + delta }
-    in
-    case m of
-        Booting bm ->
-            updateTime bm |> Booting
-
-        Running rm ->
-            updateTime rm |> Running
+tick : Float -> CommonProperties a -> CommonProperties a
+tick delta anyM =
+    { anyM | time = anyM.time + delta }

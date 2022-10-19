@@ -9,35 +9,30 @@ import PlayElm.Programs.Balls as Balls
 import PlayElm.Types as Types
 
 
-updateWithMsg : Types.Doers -> Model.Model -> ( Model.Model, Cmd Msg.Msg )
-updateWithMsg config model =
-    case model of
-        (Model.Running rmm) as rm ->
-            let
-                context =
-                    { time = rmm.time
-                    , cols = rmm.cols
-                    , rows = rmm.rows
-                    , width = rmm.clientRect.width
-                    , height = rmm.clientRect.height
-                    , aspect = rmm.aspect
-                    }
+updateWithMsg : Types.Doers -> Model.Context -> ( Model.Context, Cmd Msg.Msg )
+updateWithMsg config context =
+    let
+        localContext =
+            { time = context.time
+            , cols = context.cols
+            , rows = context.rows
+            , width = context.clientRect.width
+            , height = context.clientRect.height
+            , aspect = context.aspect
+            }
 
-                row rowNum =
-                    List.foldl (\colNum str -> str ++ config.runner context colNum rowNum) "" (List.range 0 (rmm.cols - 1))
+        row rowNum =
+            List.foldl (\colNum str -> str ++ config.runner localContext colNum rowNum) "" (List.range 0 (context.cols - 1))
 
-                newScreen =
-                    List.foldl (\rowNum -> Array.push (row rowNum)) Array.empty (List.range 0 (rmm.rows - 1))
+        newScreen =
+            List.foldl (\rowNum -> Array.push (row rowNum)) Array.empty (List.range 0 (context.rows - 1))
 
-                newRm =
-                    { rmm | screen = newScreen }
-            in
-            ( Model.Running newRm, Port.getBoundingClientRect Model.elementId )
-
-        _ ->
-            ( model, Port.getBoundingClientRect Model.elementId )
+        newExecuting =
+            { context | screen = newScreen }
+    in
+    ( newExecuting, Port.getBoundingClientRect Model.elementId )
 
 
-step : Types.Doers -> Float -> Model.Model -> ( Model.Model, Cmd Msg.Msg )
-step _ newTime model =
-    ( Model.tick newTime model, Port.getBoundingClientRect Model.elementId )
+step : Types.Doers -> Float -> Model.Context -> ( Model.Context, Cmd Msg.Msg )
+step _ newTime context =
+    ( Model.tick newTime context, Cmd.none )

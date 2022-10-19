@@ -28,5 +28,14 @@ viewScreen model =
                     Html.span [ HtmlAttributes.style "display" "block" ]
                         [ Html.text l ]
                 )
-                rm.screen
+                rm.context.screen
+                |> Array.toList
+
+        Model.Executing rm ->
+            Array.map
+                (\l ->
+                    Html.span [ HtmlAttributes.style "display" "block" ]
+                        [ Html.text l ]
+                )
+                rm.context.screen
                 |> Array.toList

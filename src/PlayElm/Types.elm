@@ -1,4 +1,4 @@
-module PlayElm.Types exposing (BoundingClientRect, ComputedStyle, Config, Context, Doers, Runnable)
+module PlayElm.Types exposing (BoundingClientRect, ComputedStyle, Context, Doers, Runnable)
 
 import Random as Random
 import Time as Time
@@ -41,10 +41,4 @@ type alias Runnable =
 type alias Doers =
     { runner : Runnable
     , generator : Int -> Random.Generator String
-    }
-
-
-type alias Config a b c =
-    { updateWithMsg : a -> b -> ( b, Cmd c )
-    , step : a -> Float -> b -> ( b, Cmd c )
     }
