@@ -1,23 +1,22 @@
 module PlayElm.Model exposing
     ( BootingModel
-    , Config
     , Model(..)
     , RunningModel
     , defaultModel
-    , elementId
-    , tick
+    , programs
     )
 
 import Array as Array
 import Browser.Navigation as BrowserNavigation
+import Dict as Dict
 import PlayElm.Msg as Msg
+import PlayElm.Programs.Balls as Balls
+import PlayElm.Programs.Circle as Circle
+import PlayElm.Programs.LineTenPrint as LineTenPrint
+import PlayElm.Programs.LineTenPrintUpdate as LineTenPrintUpdate
+import PlayElm.Programs.Update as Update
 import PlayElm.Types as Types
 import Time as Time
-
-
-elementId : String
-elementId =
-    "play"
 
 
 type Model
@@ -35,14 +34,52 @@ type alias BootingModel =
 
 type alias RunningModel =
     { context : Types.Context
-    , config : Config Msg.Msg
+    , config : Types.Config Msg.Msg
+    , programs : Dict.Dict String (Types.ProgramConfig Msg.Msg)
     }
 
 
-type alias Config a =
-    { updateWithMsg : Types.Context -> ( Types.Context, Cmd a )
-    , step : Float -> Types.Context -> ( Types.Context, Cmd a )
+standardUpdate : Types.Config Msg.Msg
+standardUpdate =
+    { updateWithMsg = Update.updateWithMsg
+    , step = Update.step
     }
+
+
+programs : Dict.Dict String (Types.ProgramConfig Msg.Msg)
+programs =
+    Dict.fromList
+        [ ( "Balls"
+          , { config = standardUpdate
+            , doers =
+                { runner = Balls.run
+                , generator = LineTenPrint.generateMaze
+                , generatedValue = ""
+                }
+            }
+          )
+        , ( "Circle"
+          , { config = standardUpdate
+            , doers =
+                { runner = Circle.run
+                , generator = LineTenPrint.generateMaze
+                , generatedValue = ""
+                }
+            }
+          )
+        , ( "LineTenPrint"
+          , { config =
+                { updateWithMsg = LineTenPrintUpdate.updateWithMsg
+                , step = LineTenPrintUpdate.step
+                }
+            , doers =
+                { runner = Types.idRunner
+                , generator = LineTenPrint.generateMaze
+                , generatedValue = ""
+                }
+            }
+          )
+        ]
 
 
 defaultModel : BootingModel
@@ -52,8 +89,3 @@ defaultModel =
     , clientRect = Nothing
     , computedStyle = Nothing
     }
-
-
-tick : Float -> Types.CommonProperties a -> Types.CommonProperties a
-tick delta anyM =
-    { anyM | time = anyM.time + delta }

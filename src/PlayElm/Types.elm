@@ -3,15 +3,24 @@ module PlayElm.Types exposing
     , CommonContext
     , CommonProperties
     , ComputedStyle
+    , Config
     , Context
     , Doers
+    , ProgramConfig
     , Runnable
+    , elementId
     , idRunner
+    , tick
     )
 
 import Array as Array
 import Random as Random
 import Time as Time
+
+
+elementId : String
+elementId =
+    "play"
 
 
 type alias BoundingClientRect =
@@ -39,6 +48,11 @@ type alias CommonProperties a =
         | pointer : ( Float, Float )
         , time : Float
     }
+
+
+tick : Float -> CommonProperties a -> CommonProperties a
+tick delta anyM =
+    { anyM | time = anyM.time + delta }
 
 
 type alias CommonContext a =
@@ -73,4 +87,16 @@ type alias Doers =
     { runner : Runnable
     , generator : Int -> Random.Generator String
     , generatedValue : String
+    }
+
+
+type alias Config a =
+    { updateWithMsg : Context -> ( Context, Cmd a )
+    , step : Float -> Context -> ( Context, Cmd a )
+    }
+
+
+type alias ProgramConfig a =
+    { config : Config a
+    , doers : Doers
     }

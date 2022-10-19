@@ -1,7 +1,6 @@
 module PlayElm.Programs.Update exposing (..)
 
 import Array as Array
-import PlayElm.Model as Model
 import PlayElm.Modules.Sdf as Sdf
 import PlayElm.Msg as Msg
 import PlayElm.Port as Port
@@ -11,7 +10,7 @@ import PlayElm.Types as Types
 
 step : Float -> Types.Context -> ( Types.Context, Cmd Msg.Msg )
 step newTime context =
-    ( Model.tick newTime context, Cmd.none )
+    ( Types.tick newTime context, Cmd.none )
 
 
 updateWithMsg : Types.Context -> ( Types.Context, Cmd Msg.Msg )
@@ -43,4 +42,4 @@ updateWithMsg context =
             , doers = context.doers
             }
     in
-    ( newContext, Port.getBoundingClientRect Model.elementId )
+    ( newContext, Port.getBoundingClientRect Types.elementId )

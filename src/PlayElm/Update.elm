@@ -1,7 +1,6 @@
 module PlayElm.Update exposing (update)
 
 import Array as Array
-import Dict as Dict
 import PlayElm.Model as Model
 import PlayElm.Msg as Msg
 import PlayElm.Port as Port
@@ -21,21 +20,21 @@ update : Msg.Msg -> Model.Model -> ( Model.Model, Cmd Msg.Msg )
 update msg model =
     case ( msg, model ) of
         ( Msg.Tick newTime, Model.Booting bmm ) ->
-            ( Model.tick newTime bmm, Port.getBoundingClientRect Model.elementId ) |> Tuple.mapFirst Model.Booting
+            ( Types.tick newTime bmm, Port.getBoundingClientRect Types.elementId ) |> Tuple.mapFirst Model.Booting
 
         ( Msg.Tick newTime, Model.Running rmm ) ->
             if rmm.context.running then
                 rmm.config.step newTime rmm.context |> toModel rmm Model.Executing
 
             else
-                ( Model.tick newTime rmm.context, Port.getBoundingClientRect Model.elementId ) |> toModel rmm Model.Executing
+                ( Types.tick newTime rmm.context, Port.getBoundingClientRect Types.elementId ) |> toModel rmm Model.Executing
 
         ( Msg.Tick newTime, Model.Executing emm ) ->
             if emm.context.running then
                 emm.config.updateWithMsg emm.context |> toModel emm Model.Running
 
             else
-                ( Model.tick newTime emm.context, Port.getBoundingClientRect Model.elementId ) |> toModel emm Model.Running
+                ( Types.tick newTime emm.context, Port.getBoundingClientRect Types.elementId ) |> toModel emm Model.Running
 
         ( Msg.RandomString str, Model.Executing emm ) ->
             if emm.context.running then
@@ -55,7 +54,7 @@ update msg model =
                 emm.config.updateWithMsg newContext |> toModel emm Model.Running
 
             else
-                ( model, Port.getBoundingClientRect Model.elementId )
+                ( model, Port.getBoundingClientRect Types.elementId )
 
         ( Msg.MouseMove e, Model.Booting bm ) ->
             mouseMove e.pagePos bm |> Tuple.mapFirst Model.Booting
@@ -89,55 +88,6 @@ timeToFloat t =
 mouseMove : ( Float, Float ) -> Types.CommonProperties a -> ( Types.CommonProperties a, Cmd msg )
 mouseMove pos m =
     ( { m | pointer = pos }, Cmd.none )
-
-
-type alias Stuff =
-    { config : Model.Config Msg.Msg
-    , doers : Types.Doers
-    }
-
-
-standardUpdate : Model.Config Msg.Msg
-standardUpdate =
-    { updateWithMsg = Update.updateWithMsg
-    , step = Update.step
-    }
-
-
-programs : Dict.Dict String Stuff
-programs =
-    Dict.fromList
-        [ ( "Balls"
-          , { config = standardUpdate
-            , doers =
-                { runner = Balls.run
-                , generator = LineTenPrint.generateMaze
-                , generatedValue = ""
-                }
-            }
-          )
-        , ( "Circle"
-          , { config = standardUpdate
-            , doers =
-                { runner = Circle.run
-                , generator = LineTenPrint.generateMaze
-                , generatedValue = ""
-                }
-            }
-          )
-        , ( "LineTenPrint"
-          , { config =
-                { updateWithMsg = LineTenPrintUpdate.updateWithMsg
-                , step = LineTenPrintUpdate.step
-                }
-            , doers =
-                { runner = Types.idRunner
-                , generator = LineTenPrint.generateMaze
-                , generatedValue = ""
-                }
-            }
-          )
-        ]
 
 
 boot : Model.BootingModel -> Model.Model
@@ -176,6 +126,7 @@ boot m =
             Model.Running
                 { context = context
                 , config = config
+                , programs = Model.programs
                 }
 
         ( _, _ ) ->

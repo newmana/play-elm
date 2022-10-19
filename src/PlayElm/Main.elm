@@ -8,6 +8,7 @@ import Json.Decode as JsonDecode
 import PlayElm.Model as Model
 import PlayElm.Msg as Msg
 import PlayElm.Port as Port
+import PlayElm.Types as Types
 import PlayElm.Update as Update
 import PlayElm.Util as Util
 import PlayElm.View as View
@@ -19,8 +20,8 @@ import Url as Url
 init : flags -> Url.Url -> BrowserNavigation.Key -> ( Model.Model, Cmd Msg.Msg )
 init flags url nav =
     Update.update Msg.Nothing (Model.Booting Model.defaultModel)
-        |> Util.addCmd (Port.getBoundingClientRect Model.elementId)
-        |> Util.addCmd (Port.getComputedStyle Model.elementId)
+        |> Util.addCmd (Port.getBoundingClientRect Types.elementId)
+        |> Util.addCmd (Port.getComputedStyle Types.elementId)
 
 
 subscriptions : Model.Model -> Sub Msg.Msg

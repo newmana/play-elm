@@ -1,7 +1,6 @@
 module PlayElm.Programs.LineTenPrintUpdate exposing (..)
 
 import Array as Array
-import PlayElm.Model as Model
 import PlayElm.Msg as Msg
 import PlayElm.Port as Port
 import PlayElm.Programs.LineTenPrint as LineTenPrint
@@ -24,4 +23,4 @@ updateWithMsg context =
         newRm =
             { context | screen = newScreen, running = False }
     in
-    ( newRm, Port.getBoundingClientRect Model.elementId )
+    ( newRm, Port.getBoundingClientRect Types.elementId )

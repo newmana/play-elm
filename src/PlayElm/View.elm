@@ -6,6 +6,7 @@ import Html.Attributes as HtmlAttributes
 import Html.Events.Extra.Mouse as MouseEvent
 import PlayElm.Model as Model
 import PlayElm.Msg as Msg
+import PlayElm.Types as Types
 
 
 view : Model.Model -> List (Html.Html Msg.Msg)
@@ -14,7 +15,7 @@ view model =
         [ Html.div
             [ HtmlAttributes.class "flex-left" ]
             [ Html.pre
-                [ HtmlAttributes.id Model.elementId, MouseEvent.onMove Msg.MouseMove ]
+                [ HtmlAttributes.id Types.elementId, MouseEvent.onMove Msg.MouseMove ]
                 (viewScreen model)
             ]
         , Html.div
@@ -28,11 +29,12 @@ viewPrograms : Model.Model -> List (Html.Html Msg.Msg)
 viewPrograms model =
     [ Html.div []
         [ Html.fieldset []
-            [ Html.input [ HtmlAttributes.type_ "radio" ] [ Html.label [] [ Html.text "Hi" ] ]
-            , Html.br [] [ Html.text "Hi" ]
-            , Html.input [ HtmlAttributes.type_ "radio" ] [ Html.label [] [] ]
-            , Html.br [] []
-            , Html.input [ HtmlAttributes.type_ "radio" ] [ Html.label [] [] ]
+            [ Html.input [ HtmlAttributes.type_ "radio" ] []
+            , Html.label [] [ Html.text "Hi" ]
+            , Html.input [ HtmlAttributes.type_ "radio" ] []
+            , Html.label [] [ Html.text "Hi" ]
+            , Html.input [ HtmlAttributes.type_ "radio" ] []
+            , Html.label [] [ Html.text "Hi" ]
             ]
         ]
     ]
