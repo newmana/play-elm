@@ -1,6 +1,7 @@
 module PlayElm.Update exposing (update)
 
 import Array as Array
+import Dict as Dict
 import PlayElm.Model as Model
 import PlayElm.Msg as Msg
 import PlayElm.Port as Port
@@ -88,6 +89,55 @@ timeToFloat t =
 mouseMove : ( Float, Float ) -> Types.CommonProperties a -> ( Types.CommonProperties a, Cmd msg )
 mouseMove pos m =
     ( { m | pointer = pos }, Cmd.none )
+
+
+type alias Stuff =
+    { config : Model.Config Msg.Msg
+    , doers : Types.Doers
+    }
+
+
+standardUpdate : Model.Config Msg.Msg
+standardUpdate =
+    { updateWithMsg = Update.updateWithMsg
+    , step = Update.step
+    }
+
+
+programs : Dict.Dict String Stuff
+programs =
+    Dict.fromList
+        [ ( "Balls"
+          , { config = standardUpdate
+            , doers =
+                { runner = Balls.run
+                , generator = LineTenPrint.generateMaze
+                , generatedValue = ""
+                }
+            }
+          )
+        , ( "Circle"
+          , { config = standardUpdate
+            , doers =
+                { runner = Circle.run
+                , generator = LineTenPrint.generateMaze
+                , generatedValue = ""
+                }
+            }
+          )
+        , ( "LineTenPrint"
+          , { config =
+                { updateWithMsg = LineTenPrintUpdate.updateWithMsg
+                , step = LineTenPrintUpdate.step
+                }
+            , doers =
+                { runner = Types.idRunner
+                , generator = LineTenPrint.generateMaze
+                , generatedValue = ""
+                }
+            }
+          )
+        ]
 
 
 boot : Model.BootingModel -> Model.Model

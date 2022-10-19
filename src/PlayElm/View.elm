@@ -10,9 +10,31 @@ import PlayElm.Msg as Msg
 
 view : Model.Model -> List (Html.Html Msg.Msg)
 view model =
-    [ Html.pre
-        [ HtmlAttributes.id Model.elementId, MouseEvent.onMove Msg.MouseMove ]
-        (viewScreen model)
+    [ Html.div [ HtmlAttributes.class "flex-container" ]
+        [ Html.div
+            [ HtmlAttributes.class "flex-left" ]
+            [ Html.pre
+                [ HtmlAttributes.id Model.elementId, MouseEvent.onMove Msg.MouseMove ]
+                (viewScreen model)
+            ]
+        , Html.div
+            [ HtmlAttributes.class "flex-right" ]
+            (viewPrograms model)
+        ]
+    ]
+
+
+viewPrograms : Model.Model -> List (Html.Html Msg.Msg)
+viewPrograms model =
+    [ Html.div []
+        [ Html.fieldset []
+            [ Html.input [ HtmlAttributes.type_ "radio" ] [ Html.label [] [ Html.text "Hi" ] ]
+            , Html.br [] [ Html.text "Hi" ]
+            , Html.input [ HtmlAttributes.type_ "radio" ] [ Html.label [] [] ]
+            , Html.br [] []
+            , Html.input [ HtmlAttributes.type_ "radio" ] [ Html.label [] [] ]
+            ]
+        ]
     ]
 
 

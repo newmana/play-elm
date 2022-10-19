@@ -27,3 +27,20 @@ It is illegal to download or use them on other websites.
 	font-style: normal;
 }
 
+.flex-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.flex-left {
+  width: 75%;
+  height: 100vh;
+  margin: 5px;
+  padding: 5px;
+}
+
+.flex-right {
+  width: 25%;
+  margin: 5px;
+  padding: 5px;
+}
