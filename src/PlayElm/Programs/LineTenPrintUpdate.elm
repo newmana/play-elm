@@ -9,16 +9,16 @@ import PlayElm.Types as Types
 import Random as Random
 
 
-step : Types.Doers -> Float -> Types.Context -> ( Types.Context, Cmd Msg.Msg )
-step doers newTime context =
-    ( context, Random.generate Msg.RandomString (doers.generator (context.cols * context.rows)) )
+step : Float -> Types.Context -> ( Types.Context, Cmd Msg.Msg )
+step newTime context =
+    ( context, Random.generate Msg.RandomString (context.doers.generator (context.cols * context.rows)) )
 
 
-updateWithMsg : Types.Doers -> Types.Context -> ( Types.Context, Cmd Msg.Msg )
-updateWithMsg doers context =
+updateWithMsg : Types.Context -> ( Types.Context, Cmd Msg.Msg )
+updateWithMsg context =
     let
         newScreen =
-            Array.push doers.generatedValue context.screen
+            Array.push context.doers.generatedValue context.screen
 
         newRm =
             { context | screen = newScreen }

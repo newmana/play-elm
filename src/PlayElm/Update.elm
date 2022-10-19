@@ -24,21 +24,21 @@ update msg model =
 
         ( Msg.Tick newTime, Model.Running rmm ) ->
             if rmm.context.running then
-                Update.step rmm.context.doers newTime rmm.context |> toModel rmm Model.Executing
+                rmm.config.step newTime rmm.context |> toModel rmm Model.Executing
 
             else
                 ( Model.tick newTime rmm.context, Port.getBoundingClientRect Model.elementId ) |> toModel rmm Model.Executing
 
         ( Msg.Tick newTime, Model.Executing emm ) ->
             if emm.context.running then
-                Update.updateWithMsg emm.context.doers emm.context |> toModel emm Model.Running
+                emm.config.updateWithMsg emm.context |> toModel emm Model.Running
 
             else
                 ( Model.tick newTime emm.context, Port.getBoundingClientRect Model.elementId ) |> toModel emm Model.Running
 
         ( Msg.RandomString str, Model.Executing emm ) ->
             if emm.context.running then
-                Update.updateWithMsg emm.context.doers emm.context |> toModel emm Model.Running
+                emm.config.updateWithMsg emm.context |> toModel emm Model.Running
 
             else
                 ( model, Port.getBoundingClientRect Model.elementId )

@@ -9,11 +9,16 @@ import PlayElm.Programs.Balls as Balls
 import PlayElm.Types as Types
 
 
-updateWithMsg : Types.Doers -> Types.Context -> ( Types.Context, Cmd Msg.Msg )
-updateWithMsg config context =
+step : Float -> Types.Context -> ( Types.Context, Cmd Msg.Msg )
+step newTime context =
+    ( Model.tick newTime context, Cmd.none )
+
+
+updateWithMsg : Types.Context -> ( Types.Context, Cmd Msg.Msg )
+updateWithMsg context =
     let
         commonContext =
-            config.runner
+            context.doers.runner
                 { pointer = context.pointer
                 , time = context.time
                 , clientRect = context.clientRect
@@ -39,8 +44,3 @@ updateWithMsg config context =
             }
     in
     ( newContext, Port.getBoundingClientRect Model.elementId )
-
-
-step : Types.Doers -> Float -> Types.Context -> ( Types.Context, Cmd Msg.Msg )
-step _ newTime context =
-    ( Model.tick newTime context, Cmd.none )

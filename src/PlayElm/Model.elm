@@ -35,13 +35,13 @@ type alias BootingModel =
 
 type alias RunningModel =
     { context : Types.Context
-    , config : Config Types.Doers Msg.Msg
+    , config : Config Msg.Msg
     }
 
 
-type alias Config a b =
-    { updateWithMsg : a -> Types.Context -> ( Types.Context, Cmd b )
-    , step : a -> Float -> Types.Context -> ( Types.Context, Cmd b )
+type alias Config a =
+    { updateWithMsg : Types.Context -> ( Types.Context, Cmd a )
+    , step : Float -> Types.Context -> ( Types.Context, Cmd a )
     }
 
 
