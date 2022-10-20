@@ -15,6 +15,7 @@ import PlayElm.Programs.Balls as Balls
 import PlayElm.Programs.Circle as Circle
 import PlayElm.Programs.LineTenPrint as LineTenPrint
 import PlayElm.Programs.LineTenPrintUpdate as LineTenPrintUpdate
+import PlayElm.Programs.Plasma as Plasma
 import PlayElm.Programs.Update as Update
 import PlayElm.Types as Types
 import Time as Time
@@ -64,6 +65,15 @@ programs =
           , { config = standardUpdate
             , doers =
                 { runner = Circle.run
+                , generator = LineTenPrint.generateMaze
+                , generatedValue = ""
+                }
+            }
+          )
+        , ( "Plasma"
+          , { config = standardUpdate
+            , doers =
+                { runner = Plasma.run
                 , generator = LineTenPrint.generateMaze
                 , generatedValue = ""
                 }
