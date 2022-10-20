@@ -13,6 +13,7 @@ import Dict as Dict
 import PlayElm.Msg as Msg
 import PlayElm.Programs.Balls as Balls
 import PlayElm.Programs.Circle as Circle
+import PlayElm.Programs.Cube as Cube
 import PlayElm.Programs.LineTenPrint as LineTenPrint
 import PlayElm.Programs.LineTenPrintUpdate as LineTenPrintUpdate
 import PlayElm.Programs.Plasma as Plasma
@@ -65,6 +66,15 @@ programs =
           , { config = standardUpdate
             , doers =
                 { runner = Circle.run
+                , generator = LineTenPrint.generateMaze
+                , generatedValue = ""
+                }
+            }
+          )
+        , ( "Cube"
+          , { config = standardUpdate
+            , doers =
+                { runner = Cube.run
                 , generator = LineTenPrint.generateMaze
                 , generatedValue = ""
                 }

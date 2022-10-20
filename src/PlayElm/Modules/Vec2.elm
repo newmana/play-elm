@@ -1,4 +1,4 @@
-module PlayElm.Modules.Vec2 exposing (add, div, dot, length, mul, sub)
+module PlayElm.Modules.Vec2 exposing (..)
 
 
 add : ( Float, Float ) -> ( Float, Float ) -> ( Float, Float )
@@ -19,6 +19,26 @@ mul ( aX, aY ) ( bX, bY ) =
 div : ( Float, Float ) -> ( Float, Float ) -> ( Float, Float )
 div ( aX, aY ) ( bX, bY ) =
     ( aX / bX, aY / bY )
+
+
+addN : ( Float, Float ) -> Float -> ( Float, Float )
+addN ( aX, aY ) k =
+    ( aX + k, aY + k )
+
+
+subN : ( Float, Float ) -> Float -> ( Float, Float )
+subN ( aX, aY ) k =
+    ( aX - k, aY - k )
+
+
+mulN : ( Float, Float ) -> Float -> ( Float, Float )
+mulN ( aX, aY ) k =
+    ( aX * k, aY * k )
+
+
+divN : ( Float, Float ) -> Float -> ( Float, Float )
+divN ( aX, aY ) k =
+    ( aX / k, aY / k )
 
 
 dot : ( Float, Float ) -> ( Float, Float ) -> Float
