@@ -32,6 +32,7 @@
     "coverage": "yarn run elm-coverage",
     "full": "yarn run elm-test && yarn run elm-review",
     "repl": "yarn run elm repl",
-    "run": "PARCEL_ELM_NO_DEBUG=1 yarn run parcel --no-cache src/index.html"
+    "run": "PARCEL_ELM_NO_DEBUG=1 yarn run parcel --no-cache src/index.html",
+    "doc": "yarn run parcel build src/index.html --dist-dir docs --public-url /play-elm --no-cache"
   }
 }
