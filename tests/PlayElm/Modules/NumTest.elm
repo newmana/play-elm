@@ -24,4 +24,7 @@ testMap =
         , Test.test "Simple 3" <|
             \_ ->
                 Num.map 0.1 0.2 0.3333333333333333 0.5 0.7 |> Expect.within (Expect.Absolute 0.0001) 0.35
+        , Test.test "Simple 4" <|
+            \_ ->
+                Num.map 55.72786381269883 0.0 69 0.001 0.1 |> Expect.within (Expect.Absolute 0.0001) 0.08095736981822006
         ]

@@ -71,16 +71,16 @@ type alias CommonContext a =
 
 
 type alias Cursor =
-    { x : Int
-    , y : Int
+    { x : Float
+    , y : Float
     , pressed : Bool
     }
 
 
 cursor : CommonContext {} -> Cursor
 cursor context =
-    { x = min (context.cols - 1) ((context.pointer |> Tuple.first) / context.computedStyle.cellWidth |> round)
-    , y = min (context.rows - 1) ((context.pointer |> Tuple.second) / context.computedStyle.lineHeight |> round)
+    { x = min (context.cols - 1 |> toFloat) ((context.pointer |> Tuple.first) / context.computedStyle.cellWidth)
+    , y = min (context.rows - 1 |> toFloat) ((context.pointer |> Tuple.second) / context.computedStyle.lineHeight)
     , pressed = context.pressed
     }
 

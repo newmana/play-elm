@@ -31,7 +31,7 @@ vertices =
     ]
 
 
-edges : List ( Float, Float )
+edges : List ( Int, Int )
 edges =
     [ ( 0, 1 )
     , ( 1, 2 )
@@ -61,7 +61,7 @@ run context =
             2
 
         zOffs =
-            Num.map (sin t * 0.12) -1.0 1.0 -2.5 -6.0
+            Num.map (sin (t * 0.12)) -1.0 1.0 -2.5 -6.0
 
         boxProj =
             List.map
@@ -73,15 +73,16 @@ run context =
                         rotateY =
                             Vec3.rotY rotateX rotY
 
-                        rotateZ =
+                        ( rotateZX, rotateZY, rotateZZ ) =
                             Vec3.rotZ rotateY rotZ
                     in
-                    rotateZ
+                    Vec2.mulN ( rotateZX, rotateZY ) (d / rotateZZ - zOffs)
                 )
                 vertices
+                |> Array.fromList
 
         row rowNum =
-            List.foldl (\colNum str -> str ++ runLine context colNum rowNum) "" (List.range 0 (context.cols - 1))
+            List.foldl (\colNum str -> str ++ runLine context boxProj colNum rowNum) "" (List.range 0 (context.cols - 1))
 
         newScreen =
             List.foldl (\rowNum -> Array.push (row rowNum)) Array.empty (List.range 0 (context.rows - 1))
@@ -89,8 +90,8 @@ run context =
     { context | screen = newScreen }
 
 
-runLine : Types.CommonContext {} -> Int -> Int -> String
-runLine context x y =
+runLine : Types.CommonContext {} -> Array.Array ( Float, Float ) -> Int -> Int -> String
+runLine context boxProj x y =
     let
         t =
             context.time * 0.01
@@ -108,25 +109,34 @@ runLine context x y =
             2.0 * (toFloat y - toFloat context.rows / 2.0) / m
 
         d =
-            1 ^ 10
-
-        n =
-            List.length edges
+            1.0e10
 
         thickness =
-            Num.map (Types.cursor context |> .x |> toFloat) 0.0 (context.cols |> toFloat) 0.001 0.1
+            Num.map (Types.cursor context |> .x) 0.0 (context.cols |> toFloat) 0.001 0.1
 
-        radius =
-            cos t * 0.4 + 0.5
+        expMul =
+            Num.map (Types.cursor context |> .y) 0.0 (context.rows |> toFloat) -100 -5
 
-        c =
-            1.0 - (e ^ (-5 * abs d))
+        newD =
+            List.foldl
+                (\edge currD ->
+                    let
+                        aa =
+                            Array.get (Tuple.first edge) boxProj |> Maybe.withDefault ( 0, 0 )
+
+                        bb =
+                            Array.get (Tuple.second edge) boxProj |> Maybe.withDefault ( 0, 0 )
+                    in
+                    min currD (Sdf.sdSegment ( stX, stY ) aa bb thickness)
+                )
+                d
+                edges
 
         charsIndex =
-            floor (c * (String.length chars |> toFloat))
+            floor ((e ^ (expMul * abs newD)) * (String.length chars |> toFloat))
     in
-    if x /= 0 && modBy 2 x == 0 then
-        String.slice charsIndex (charsIndex + 1) chars
+    if x == 0 then
+        " "
 
     else
-        "|"
+        String.slice charsIndex (charsIndex + 1) chars
