@@ -19,6 +19,7 @@ updateWithMsg context =
         commonContext =
             context.doers.runner
                 { pointer = context.pointer
+                , pressed = context.pressed
                 , time = context.time
                 , clientRect = context.clientRect
                 , computedStyle = context.computedStyle
@@ -31,6 +32,7 @@ updateWithMsg context =
 
         newContext =
             { pointer = commonContext.pointer
+            , pressed = commonContext.pressed
             , time = commonContext.time
             , clientRect = commonContext.clientRect
             , computedStyle = commonContext.computedStyle

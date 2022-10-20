@@ -8,6 +8,7 @@ module PlayElm.Types exposing
     , Doers
     , ProgramConfig
     , Runnable
+    , cursor
     , elementId
     , idRunner
     , tick
@@ -46,6 +47,7 @@ type alias ComputedStyle =
 type alias CommonProperties a =
     { a
         | pointer : ( Float, Float )
+        , pressed : Bool
         , time : Float
     }
 
@@ -66,6 +68,21 @@ type alias CommonContext a =
             , screen : Array.Array String
             , running : Bool
         }
+
+
+type alias Cursor =
+    { x : Int
+    , y : Int
+    , pressed : Bool
+    }
+
+
+cursor : CommonContext {} -> Cursor
+cursor context =
+    { x = min (context.cols - 1) ((context.pointer |> Tuple.first) / context.computedStyle.cellWidth |> round)
+    , y = min (context.rows - 1) ((context.pointer |> Tuple.second) / context.computedStyle.lineHeight |> round)
+    , pressed = context.pressed
+    }
 
 
 type alias Context =

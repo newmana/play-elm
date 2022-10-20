@@ -17,7 +17,11 @@ view model =
         [ Html.div
             [ HtmlAttributes.class "flex-left" ]
             [ Html.pre
-                [ HtmlAttributes.id Types.elementId, MouseEvent.onMove Msg.MouseMove ]
+                [ HtmlAttributes.id Types.elementId
+                , MouseEvent.onMove Msg.MouseMove
+                , MouseEvent.onDown Msg.MouseDown
+                , MouseEvent.onUp Msg.MouseUp
+                ]
                 (viewScreen model)
             ]
         , Html.div

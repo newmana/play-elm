@@ -7,6 +7,8 @@ import Time as Time
 
 type Msg
     = MouseMove MouseEvent.Event
+    | MouseDown MouseEvent.Event
+    | MouseUp MouseEvent.Event
     | Tick Float
     | RunProgram String
     | RandomString String

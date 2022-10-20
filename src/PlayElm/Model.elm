@@ -119,6 +119,7 @@ changeProgram rm p programName =
 defaultModel : BootingModel
 defaultModel =
     { pointer = ( 0, 0 )
+    , pressed = False
     , time = 0.0
     , clientRect = Nothing
     , computedStyle = Nothing

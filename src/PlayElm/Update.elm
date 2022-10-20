@@ -60,8 +60,20 @@ update msg model =
         ( Msg.MouseMove e, Model.Booting bm ) ->
             mouseMove e.pagePos bm |> Tuple.mapFirst Model.Booting
 
+        ( Msg.MouseDown e, Model.Booting bm ) ->
+            mousePressed True bm |> Tuple.mapFirst Model.Booting
+
+        ( Msg.MouseUp e, Model.Booting bm ) ->
+            mousePressed False bm |> Tuple.mapFirst Model.Booting
+
         ( Msg.MouseMove e, Model.Running rm ) ->
             mouseMove e.pagePos rm.context |> toModel rm Model.Running
+
+        ( Msg.MouseDown e, Model.Running rm ) ->
+            mousePressed True rm.context |> toModel rm Model.Running
+
+        ( Msg.MouseUp e, Model.Running rm ) ->
+            mousePressed False rm.context |> toModel rm Model.Running
 
         ( Msg.RunProgram programName, Model.Running rm ) ->
             ( runNewProgram programName rm |> Model.Running, Port.getBoundingClientRect Types.elementId )
@@ -97,6 +109,11 @@ mouseMove pos m =
     ( { m | pointer = pos }, Cmd.none )
 
 
+mousePressed : Bool -> Types.CommonProperties a -> ( Types.CommonProperties a, Cmd msg )
+mousePressed pressed m =
+    ( { m | pressed = pressed }, Cmd.none )
+
+
 boot : Model.BootingModel -> Model.Model
 boot m =
     case ( m.clientRect, m.computedStyle ) of
@@ -110,6 +127,7 @@ boot m =
 
                 context =
                     { pointer = m.pointer
+                    , pressed = m.pressed
                     , time = m.time
                     , clientRect = cr
                     , computedStyle = cs
