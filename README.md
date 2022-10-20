@@ -5,4 +5,4 @@ There is a [demo page](https://newmana.github.io/play-elm/).
                                       
 # To Do
 * Support color
-
+* More random number support
