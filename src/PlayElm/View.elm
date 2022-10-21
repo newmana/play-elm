@@ -19,8 +19,8 @@ view model =
             [ Html.pre
                 [ HtmlAttributes.id Types.elementId
                 , MouseEvent.onMove Msg.MouseMove
-                , MouseEvent.onDown Msg.MouseDown
-                , MouseEvent.onUp Msg.MouseUp
+                , MouseEvent.onDown (\_ -> Msg.MouseDown)
+                , MouseEvent.onUp (\_ -> Msg.MouseUp)
                 ]
                 (viewScreen model)
             ]

@@ -123,7 +123,7 @@ runLine context boxProj x y =
                 1.0e10
                 edges
     in
-    if x == 0 then
+    if d == 0 then
         " "
 
     else

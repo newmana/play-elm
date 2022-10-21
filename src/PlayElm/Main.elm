@@ -15,14 +15,14 @@ import Url
 
 
 init : flags -> Url.Url -> BrowserNavigation.Key -> ( Model.Model, Cmd Msg.Msg )
-init flags url nav =
+init _ _ _ =
     Update.update Msg.Nothing (Model.Booting Model.defaultModel)
         |> Util.addCmd (Port.getBoundingClientRect Types.elementId)
         |> Util.addCmd (Port.getComputedStyle Types.elementId)
 
 
 subscriptions : Model.Model -> Sub Msg.Msg
-subscriptions model =
+subscriptions _ =
     Sub.batch
         [ Port.setBoundingClientRect Msg.SetBoundingClientRect
         , Port.setComputedStyle Msg.SetComputedStyle

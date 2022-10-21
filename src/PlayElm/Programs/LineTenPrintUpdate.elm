@@ -9,7 +9,7 @@ import String.Extra as StringExtra
 
 
 step : Float -> Types.Context -> ( Types.Context, Cmd Msg.Msg )
-step newTime context =
+step _ context =
     ( context, Random.generate Msg.RandomString (context.doers.generator (context.cols * context.rows)) )
 
 

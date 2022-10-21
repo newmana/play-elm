@@ -55,19 +55,19 @@ update msg model =
         ( Msg.MouseMove e, Model.Booting bm ) ->
             mouseMove e.pagePos bm |> Tuple.mapFirst Model.Booting
 
-        ( Msg.MouseDown _, Model.Booting bm ) ->
+        ( Msg.MouseDown, Model.Booting bm ) ->
             mousePressed True bm |> Tuple.mapFirst Model.Booting
 
-        ( Msg.MouseUp _, Model.Booting bm ) ->
+        ( Msg.MouseUp, Model.Booting bm ) ->
             mousePressed False bm |> Tuple.mapFirst Model.Booting
 
         ( Msg.MouseMove e, Model.Running rm ) ->
             mouseMove e.pagePos rm.context |> toModel rm Model.Running
 
-        ( Msg.MouseDown _, Model.Running rm ) ->
+        ( Msg.MouseDown, Model.Running rm ) ->
             mousePressed True rm.context |> toModel rm Model.Running
 
-        ( Msg.MouseUp _, Model.Running rm ) ->
+        ( Msg.MouseUp, Model.Running rm ) ->
             mousePressed False rm.context |> toModel rm Model.Running
 
         ( Msg.RunProgram programName, Model.Running rm ) ->

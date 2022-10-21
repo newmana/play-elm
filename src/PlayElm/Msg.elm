@@ -6,8 +6,8 @@ import PlayElm.Types as Types
 
 type Msg
     = MouseMove MouseEvent.Event
-    | MouseDown MouseEvent.Event
-    | MouseUp MouseEvent.Event
+    | MouseDown
+    | MouseUp
     | Tick Float
     | RunProgram String
     | RandomString String
