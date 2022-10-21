@@ -76,7 +76,7 @@ run context =
                         ( rotateZX, rotateZY, rotateZZ ) =
                             Vec3.rotZ rotateY rotZ
                     in
-                    Vec2.mulN ( rotateZX, rotateZY ) (d / rotateZZ - zOffs)
+                    Vec2.mulN ( rotateZX, rotateZY ) (d / (rotateZZ - zOffs))
                 )
                 vertices
                 |> Array.fromList
@@ -109,10 +109,10 @@ runLine context boxProj x y =
             2.0 * ((toFloat y - toFloat context.rows / 2.0) + 0.5) / m
 
         thickness =
-            Num.map 0.0 0.0 (context.cols |> toFloat) 0.001 0.1
+            Num.map (Types.cursor context |> .x) 0.0 (context.cols |> toFloat) 0.001 0.1
 
         expMul =
-            Num.map 0.0 0.0 (context.rows |> toFloat) -100 -5
+            Num.map (Types.cursor context |> .y) 0.0 (context.rows |> toFloat) -100 -5
 
         d =
             List.foldl
