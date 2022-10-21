@@ -33,7 +33,7 @@ sdSegment p a b thickness =
             Vec2.sub b a
 
         h =
-            clamp (Vec2.dot pa ba / Vec2.dot ba ba) 0.0 1.0
+            clamp 0.0 1.0 (Vec2.dot pa ba / Vec2.dot ba ba)
     in
     Vec2.length (Vec2.sub pa (Vec2.mulN ba h)) - thickness
 
