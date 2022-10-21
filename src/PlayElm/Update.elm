@@ -1,20 +1,15 @@
 module PlayElm.Update exposing (update)
 
-import Array as Array
-import Dict as Dict
+import Array
+import Dict
 import PlayElm.Model as Model
 import PlayElm.Msg as Msg
 import PlayElm.Port as Port
 import PlayElm.Programs.Balls as Balls
-import PlayElm.Programs.Circle as Circle
 import PlayElm.Programs.LineTenPrint as LineTenPrint
-import PlayElm.Programs.LineTenPrintUpdate as LineTenPrintUpdate
 import PlayElm.Programs.Update as Update
 import PlayElm.Types as Types
-import PlayElm.Util as Util
-import Random as Random
-import Time as Time
-import Tuple as Tuple
+import Tuple
 
 
 update : Msg.Msg -> Model.Model -> ( Model.Model, Cmd Msg.Msg )
@@ -60,19 +55,19 @@ update msg model =
         ( Msg.MouseMove e, Model.Booting bm ) ->
             mouseMove e.pagePos bm |> Tuple.mapFirst Model.Booting
 
-        ( Msg.MouseDown e, Model.Booting bm ) ->
+        ( Msg.MouseDown _, Model.Booting bm ) ->
             mousePressed True bm |> Tuple.mapFirst Model.Booting
 
-        ( Msg.MouseUp e, Model.Booting bm ) ->
+        ( Msg.MouseUp _, Model.Booting bm ) ->
             mousePressed False bm |> Tuple.mapFirst Model.Booting
 
         ( Msg.MouseMove e, Model.Running rm ) ->
             mouseMove e.pagePos rm.context |> toModel rm Model.Running
 
-        ( Msg.MouseDown e, Model.Running rm ) ->
+        ( Msg.MouseDown _, Model.Running rm ) ->
             mousePressed True rm.context |> toModel rm Model.Running
 
-        ( Msg.MouseUp e, Model.Running rm ) ->
+        ( Msg.MouseUp _, Model.Running rm ) ->
             mousePressed False rm.context |> toModel rm Model.Running
 
         ( Msg.RunProgram programName, Model.Running rm ) ->
@@ -97,11 +92,6 @@ update msg model =
 
         _ ->
             ( model, Cmd.none )
-
-
-timeToFloat : Time.Posix -> Float
-timeToFloat t =
-    Time.posixToMillis t |> toFloat
 
 
 mouseMove : ( Float, Float ) -> Types.CommonProperties a -> ( Types.CommonProperties a, Cmd msg )
@@ -155,7 +145,7 @@ boot m =
                 , programName = "Balls"
                 }
 
-        ( _, _ ) ->
+        _ ->
             Model.Booting m
 
 

@@ -7,9 +7,7 @@ module PlayElm.Model exposing
     , programs
     )
 
-import Array as Array
-import Browser.Navigation as BrowserNavigation
-import Dict as Dict
+import Dict
 import PlayElm.Msg as Msg
 import PlayElm.Programs.Balls as Balls
 import PlayElm.Programs.Circle as Circle
@@ -19,7 +17,6 @@ import PlayElm.Programs.LineTenPrintUpdate as LineTenPrintUpdate
 import PlayElm.Programs.Plasma as Plasma
 import PlayElm.Programs.Update as Update
 import PlayElm.Types as Types
-import Time as Time
 
 
 type Model

@@ -5,6 +5,7 @@ module PlayElm.Types exposing
     , ComputedStyle
     , Config
     , Context
+    , Cursor
     , Doers
     , ProgramConfig
     , Runnable
@@ -14,9 +15,8 @@ module PlayElm.Types exposing
     , tick
     )
 
-import Array as Array
-import Random as Random
-import Time as Time
+import Array
+import Random
 
 
 elementId : String

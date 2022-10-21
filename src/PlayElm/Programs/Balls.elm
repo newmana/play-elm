@@ -1,10 +1,9 @@
 module PlayElm.Programs.Balls exposing (run, transform)
 
-import Array as Array
+import Array
 import PlayElm.Modules.Num as Num
 import PlayElm.Modules.Sdf as Sdf
 import PlayElm.Types as Types
-import Time as Time
 
 
 chars : String

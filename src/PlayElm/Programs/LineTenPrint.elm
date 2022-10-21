@@ -1,8 +1,6 @@
-module PlayElm.Programs.LineTenPrint exposing (..)
+module PlayElm.Programs.LineTenPrint exposing (generateMaze)
 
-import PlayElm.Types as Types
-import Random as Random
-import Random.Char as RandomChar
+import Random
 import Random.String as RandomString
 
 

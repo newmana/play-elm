@@ -3,7 +3,7 @@ module PlayElm.Modules.Vec3Test exposing (tests)
 import Expect
 import PlayElm.Modules.Vec3 as Vec3
 import Test
-import UtilTest as UtilTest
+import UtilTest
 
 
 tests : Test.Test

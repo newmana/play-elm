@@ -1,9 +1,8 @@
 module PlayElm.Main exposing (main)
 
-import Browser as Browser
+import Browser
 import Browser.Events as BrowserEvents
 import Browser.Navigation as BrowserNavigation
-import Html.Events.Extra.Mouse as MouseEvent
 import Json.Decode as JsonDecode
 import PlayElm.Model as Model
 import PlayElm.Msg as Msg
@@ -12,9 +11,7 @@ import PlayElm.Types as Types
 import PlayElm.Update as Update
 import PlayElm.Util as Util
 import PlayElm.View as View
-import Task as Task
-import Time as Time
-import Url as Url
+import Url
 
 
 init : flags -> Url.Url -> BrowserNavigation.Key -> ( Model.Model, Cmd Msg.Msg )

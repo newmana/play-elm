@@ -1,9 +1,4 @@
-module PlayElm.Modules.Num exposing (map, mix, tau)
-
-
-tau : Float
-tau =
-    pi * 2
+module PlayElm.Modules.Num exposing (map, mix)
 
 
 map : Float -> Float -> Float -> Float -> Float -> Float

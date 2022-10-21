@@ -1,4 +1,4 @@
-module PlayElm.Modules.Vec3 exposing (..)
+module PlayElm.Modules.Vec3 exposing (rotX, rotY, rotZ)
 
 
 rotX : ( Float, Float, Float ) -> Float -> ( Float, Float, Float )

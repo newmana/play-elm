@@ -1,6 +1,6 @@
-module PlayElm.Programs.Cube exposing (..)
+module PlayElm.Programs.Cube exposing (run)
 
-import Array as Array
+import Array
 import PlayElm.Modules.Num as Num
 import PlayElm.Modules.Sdf as Sdf
 import PlayElm.Modules.Vec2 as Vec2
@@ -93,9 +93,6 @@ run context =
 runLine : Types.CommonContext {} -> Array.Array ( Float, Float ) -> Int -> Int -> String
 runLine context boxProj x y =
     let
-        t =
-            context.time * 0.01
-
         m =
             min context.cols context.rows |> toFloat
 
@@ -111,9 +108,6 @@ runLine context boxProj x y =
         thickness =
             Num.map (Types.cursor context |> .x) 0.0 (context.cols |> toFloat) 0.001 0.1
 
-        expMul =
-            Num.map (Types.cursor context |> .y) 0.0 (context.rows |> toFloat) -100 -5
-
         d =
             List.foldl
                 (\edge currD ->
@@ -128,12 +122,16 @@ runLine context boxProj x y =
                 )
                 1.0e10
                 edges
-
-        charsIndex =
-            floor ((e ^ (expMul * abs d)) * (String.length chars |> toFloat))
     in
     if x == 0 then
         " "
 
     else
+        let
+            expMul =
+                Num.map (Types.cursor context |> .y) 0.0 (context.rows |> toFloat) -100 -5
+
+            charsIndex =
+                floor ((e ^ (expMul * abs d)) * (String.length chars |> toFloat))
+        in
         String.slice charsIndex (charsIndex + 1) chars

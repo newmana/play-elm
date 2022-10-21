@@ -1,6 +1,5 @@
 module PlayElm.Modules.Sdf exposing
     ( opSmoothUnion
-    , sdBox
     , sdCircle
     , sdSegment
     )
@@ -12,15 +11,6 @@ import PlayElm.Modules.Vec2 as Vec2
 sdCircle : ( Float, Float ) -> Float -> Float
 sdCircle p radius =
     Vec2.length p - radius
-
-
-sdBox : ( Float, Float ) -> ( Float, Float ) -> Float
-sdBox ( pX, pY ) ( centerX, centerY ) =
-    let
-        ( dX, dY ) =
-            ( abs pX - centerX |> max 0, abs pY - centerY |> max 0 )
-    in
-    Vec2.length ( dX, dY ) + (max dX dY |> min 0.0)
 
 
 sdSegment : ( Float, Float ) -> ( Float, Float ) -> ( Float, Float ) -> Float -> Float

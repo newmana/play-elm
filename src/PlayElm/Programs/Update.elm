@@ -1,10 +1,7 @@
-module PlayElm.Programs.Update exposing (..)
+module PlayElm.Programs.Update exposing (step, updateWithMsg)
 
-import Array as Array
-import PlayElm.Modules.Sdf as Sdf
 import PlayElm.Msg as Msg
 import PlayElm.Port as Port
-import PlayElm.Programs.Balls as Balls
 import PlayElm.Types as Types
 
 

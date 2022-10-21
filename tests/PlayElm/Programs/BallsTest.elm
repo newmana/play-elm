@@ -1,10 +1,9 @@
 module PlayElm.Programs.BallsTest exposing (tests)
 
 import Expect
-import PlayElm.Modules.Vec2 as Vec2
 import PlayElm.Programs.Balls as Balls
 import Test
-import UtilTest as UtilTest
+import UtilTest
 
 
 tests : Test.Test

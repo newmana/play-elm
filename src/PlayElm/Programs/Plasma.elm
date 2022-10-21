@@ -1,8 +1,7 @@
-module PlayElm.Programs.Plasma exposing (..)
+module PlayElm.Programs.Plasma exposing (run)
 
-import Array as Array
+import Array
 import PlayElm.Modules.Num as Num
-import PlayElm.Modules.Sdf as Sdf
 import PlayElm.Modules.Vec2 as Vec2
 import PlayElm.Types as Types
 
@@ -10,16 +9,6 @@ import PlayElm.Types as Types
 chars : String
 chars =
     "$?01▄abc+-><:. "
-
-
-pi23 : Float
-pi23 =
-    pi * 2 / 3
-
-
-pi43 : Float
-pi43 =
-    pi * 4 / 3
 
 
 run : Types.Runnable
@@ -39,9 +28,6 @@ runLine context x y =
     let
         t1 =
             context.time * 0.009
-
-        t2 =
-            context.time * 0.003
 
         m =
             min context.cols context.rows |> toFloat

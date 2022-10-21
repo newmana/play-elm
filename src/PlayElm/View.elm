@@ -1,8 +1,8 @@
 module PlayElm.View exposing (view)
 
-import Array as Array
-import Dict as Dict
-import Html as Html
+import Array
+import Dict
+import Html
 import Html.Attributes as HtmlAttributes
 import Html.Events as HtmlEvents
 import Html.Events.Extra.Mouse as MouseEvent
@@ -35,7 +35,7 @@ viewPrograms : Model.Model -> List (Html.Html Msg.Msg)
 viewPrograms model =
     let
         radioButtons rm =
-            List.map
+            List.concatMap
                 (\programName ->
                     [ Html.input
                         [ HtmlAttributes.type_ "radio"
@@ -48,7 +48,6 @@ viewPrograms model =
                     ]
                 )
                 (Dict.keys rm.programs)
-                |> List.concat
 
         buttons =
             case model of
@@ -74,7 +73,7 @@ viewPrograms model =
 viewScreen : Model.Model -> List (Html.Html Msg.Msg)
 viewScreen model =
     case model of
-        Model.Booting bm ->
+        Model.Booting _ ->
             []
 
         Model.Running rm ->

@@ -1,11 +1,10 @@
-module PlayElm.Programs.LineTenPrintUpdate exposing (..)
+module PlayElm.Programs.LineTenPrintUpdate exposing (step, updateWithMsg)
 
-import Array as Array
+import Array
 import PlayElm.Msg as Msg
 import PlayElm.Port as Port
-import PlayElm.Programs.LineTenPrint as LineTenPrint
 import PlayElm.Types as Types
-import Random as Random
+import Random
 import String.Extra as StringExtra
 
 
