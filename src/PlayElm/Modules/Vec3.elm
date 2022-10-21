@@ -11,10 +11,10 @@ rotX ( x, y, z ) ang =
             sin ang
 
         newY =
-            y * c - z * s
+            (y * c) - (z * s)
 
         newZ =
-            y * s + z * c
+            (y * s) + (z * c)
     in
     ( x, newY, newZ )
 
@@ -29,10 +29,10 @@ rotY ( x, y, z ) ang =
             sin ang
 
         newX =
-            x * c + z * s
+            (x * c) + (z * s)
 
         newZ =
-            -x * s + z * c
+            (-x * s) + (z * c)
     in
     ( newX, y, newZ )
 
@@ -47,9 +47,9 @@ rotZ ( x, y, z ) ang =
             sin ang
 
         newX =
-            x * c + z * s
+            (x * c) - (y * s)
 
         newY =
-            x * s + y * c
+            (x * s) + (y * c)
     in
     ( newX, newY, z )

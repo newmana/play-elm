@@ -58,7 +58,7 @@ run context =
             ( t * 0.11, t * 0.13, -t * 0.15 )
 
         d =
-            2
+            2.0
 
         zOffs =
             Num.map (sin (t * 0.12)) -1.0 1.0 -2.5 -6.0
@@ -108,16 +108,13 @@ runLine context boxProj x y =
         stY =
             2.0 * ((toFloat y - toFloat context.rows / 2.0) + 0.5) / m
 
-        d =
-            1.0e10
-
         thickness =
             Num.map (Types.cursor context |> .x) 0.0 (context.cols |> toFloat) 0.001 0.1
 
         expMul =
             Num.map (Types.cursor context |> .y) 0.0 (context.rows |> toFloat) -100 -5
 
-        newD =
+        d =
             List.foldl
                 (\edge currD ->
                     let
@@ -129,11 +126,11 @@ runLine context boxProj x y =
                     in
                     min currD (Sdf.sdSegment ( stX, stY ) aa bb thickness)
                 )
-                d
+                1.0e10
                 edges
 
         charsIndex =
-            floor ((e ^ (expMul * abs newD)) * (String.length chars |> toFloat))
+            floor ((e ^ (expMul * abs d)) * (String.length chars |> toFloat))
     in
     if x == 0 then
         " "
