@@ -103,10 +103,10 @@ runLine context boxProj x y =
             context.aspect
 
         stX =
-            2.0 * (toFloat x - toFloat context.cols / 2.0) / m * a
+            2.0 * ((toFloat x - toFloat context.cols / 2.0) + 0.5) / m * a
 
         stY =
-            2.0 * (toFloat y - toFloat context.rows / 2.0) / m
+            2.0 * ((toFloat y - toFloat context.rows / 2.0) + 0.5) / m
 
         d =
             1.0e10
