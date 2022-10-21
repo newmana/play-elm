@@ -64,8 +64,8 @@ run context =
             Num.map (sin (t * 0.12)) -1.0 1.0 -2.5 -6.0
 
         boxProj =
-            List.map
-                (\( vX, vY, vZ ) ->
+            List.foldl
+                (\( vX, vY, vZ ) acc ->
                     let
                         rotateX =
                             Vec3.rotX ( vX, vY, vZ ) rotX
@@ -75,11 +75,14 @@ run context =
 
                         ( rotateZX, rotateZY, rotateZZ ) =
                             Vec3.rotZ rotateY rotZ
+
+                        newValue =
+                            Vec2.mulN ( rotateZX, rotateZY ) (d / (rotateZZ - zOffs))
                     in
-                    Vec2.mulN ( rotateZX, rotateZY ) (d / (rotateZZ - zOffs))
+                    Array.push newValue acc
                 )
+                Array.empty
                 vertices
-                |> Array.fromList
 
         row rowNum =
             List.foldl (\colNum str -> str ++ runLine context boxProj colNum rowNum) "" (List.range 0 (context.cols - 1))
