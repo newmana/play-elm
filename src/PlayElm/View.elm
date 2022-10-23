@@ -35,11 +35,17 @@ viewPrograms : Model.Model -> List (Html.Html Msg.Msg)
 viewPrograms model =
     let
         radioButtons rm =
+            let
+                firstProgramName =
+                    Dict.keys rm.programs |> List.head |> Maybe.withDefault ""
+            in
             List.concatMap
                 (\programName ->
                     [ Html.label []
                         [ Html.input
                             [ HtmlAttributes.type_ "radio"
+                            , HtmlAttributes.name "program"
+                            , HtmlAttributes.autofocus (programName == firstProgramName)
                             , HtmlEvents.onClick <| Msg.RunProgram programName
                             , HtmlAttributes.checked (programName == rm.programName)
                             ]
