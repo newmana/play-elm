@@ -37,14 +37,16 @@ viewPrograms model =
         radioButtons rm =
             List.concatMap
                 (\programName ->
-                    [ Html.input
-                        [ HtmlAttributes.type_ "radio"
-                        , HtmlEvents.onClick <| Msg.RunProgram programName
-                        , HtmlAttributes.checked (programName == rm.programName)
+                    [ Html.label []
+                        [ Html.input
+                            [ HtmlAttributes.type_ "radio"
+                            , HtmlEvents.onClick <| Msg.RunProgram programName
+                            , HtmlAttributes.checked (programName == rm.programName)
+                            ]
+                            []
+                        , Html.span [] [ Html.text programName ]
+                        , Html.br [] []
                         ]
-                        []
-                    , Html.label [] [ Html.text programName ]
-                    , Html.br [] []
                     ]
                 )
                 (Dict.keys rm.programs)
