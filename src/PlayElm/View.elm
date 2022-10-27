@@ -62,7 +62,7 @@ viewPrograms model =
                 Model.Booting _ ->
                     []
 
-                Model.Running rm ->
+                Model.Fetch rm ->
                     radioButtons rm
 
                 Model.Executing em ->
@@ -84,7 +84,7 @@ viewScreen model =
         Model.Booting _ ->
             []
 
-        Model.Running rm ->
+        Model.Fetch rm ->
             Array.map
                 (\l ->
                     Html.span [ HtmlAttributes.style "display" "block" ]

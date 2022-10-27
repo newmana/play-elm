@@ -21,7 +21,7 @@ import PlayElm.Types as Types
 
 type Model
     = Booting BootingModel
-    | Running RunningModel
+    | Fetch RunningModel
     | Executing RunningModel
 
 
@@ -42,8 +42,8 @@ type alias RunningModel =
 
 standardUpdate : Types.Config Msg.Msg
 standardUpdate =
-    { updateWithMsg = Update.updateWithMsg
-    , step = Update.step
+    { execute = Update.execute
+    , fetch = Update.fetch
     }
 
 
@@ -88,8 +88,8 @@ programs =
           )
         , ( "LineTenPrint"
           , { config =
-                { updateWithMsg = LineTenPrintUpdate.updateWithMsg
-                , step = LineTenPrintUpdate.step
+                { execute = LineTenPrintUpdate.execute
+                , fetch = LineTenPrintUpdate.fetch
                 }
             , doers =
                 { runner = Types.idRunner

@@ -1,4 +1,4 @@
-module PlayElm.Programs.LineTenPrintUpdate exposing (step, updateWithMsg)
+module PlayElm.Programs.LineTenPrintUpdate exposing (execute, fetch)
 
 import Array
 import PlayElm.Msg as Msg
@@ -8,13 +8,13 @@ import Random
 import String.Extra as StringExtra
 
 
-step : Float -> Types.Context -> ( Types.Context, Cmd Msg.Msg )
-step _ context =
+fetch : Float -> Types.Context -> ( Types.Context, Cmd Msg.Msg )
+fetch _ context =
     ( context, Random.generate Msg.RandomString (context.doers.generator (context.cols * context.rows)) )
 
 
-updateWithMsg : Types.Context -> ( Types.Context, Cmd Msg.Msg )
-updateWithMsg context =
+execute : Types.Context -> ( Types.Context, Cmd Msg.Msg )
+execute context =
     let
         newScreen =
             StringExtra.break context.cols context.doers.generatedValue |> Array.fromList

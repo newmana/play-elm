@@ -108,8 +108,8 @@ type alias Doers =
 
 
 type alias Config a =
-    { updateWithMsg : Context -> ( Context, Cmd a )
-    , step : Float -> Context -> ( Context, Cmd a )
+    { execute : Context -> ( Context, Cmd a )
+    , fetch : Float -> Context -> ( Context, Cmd a )
     }
 
 

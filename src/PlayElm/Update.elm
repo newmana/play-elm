@@ -18,19 +18,19 @@ update msg model =
         ( Msg.Tick newTime, Model.Booting bmm ) ->
             ( Types.tick newTime bmm, Port.getBoundingClientRect Types.elementId ) |> Tuple.mapFirst Model.Booting
 
-        ( Msg.Tick newTime, Model.Running rmm ) ->
+        ( Msg.Tick newTime, Model.Fetch rmm ) ->
             if rmm.context.running then
-                rmm.config.step newTime rmm.context |> toModel rmm Model.Executing
+                rmm.config.fetch newTime rmm.context |> toModel rmm Model.Executing
 
             else
                 ( Types.tick newTime rmm.context, Port.getBoundingClientRect Types.elementId ) |> toModel rmm Model.Executing
 
         ( Msg.Tick newTime, Model.Executing emm ) ->
             if emm.context.running then
-                emm.config.updateWithMsg emm.context |> toModel emm Model.Running
+                emm.config.execute emm.context |> toModel emm Model.Fetch
 
             else
-                ( Types.tick newTime emm.context, Port.getBoundingClientRect Types.elementId ) |> toModel emm Model.Running
+                ( Types.tick newTime emm.context, Port.getBoundingClientRect Types.elementId ) |> toModel emm Model.Fetch
 
         ( Msg.RandomString str, Model.Executing emm ) ->
             if emm.context.running then
@@ -47,7 +47,7 @@ update msg model =
                     newContext =
                         { getContext | doers = newDoers }
                 in
-                emm.config.updateWithMsg newContext |> toModel emm Model.Running
+                emm.config.execute newContext |> toModel emm Model.Fetch
 
             else
                 ( model, Port.getBoundingClientRect Types.elementId )
@@ -61,20 +61,20 @@ update msg model =
         ( Msg.MouseUp, Model.Booting bm ) ->
             mousePressed False bm |> Tuple.mapFirst Model.Booting
 
-        ( Msg.MouseMove e, Model.Running rm ) ->
-            mouseMove e.pagePos rm.context |> toModel rm Model.Running
+        ( Msg.MouseMove e, Model.Fetch rm ) ->
+            mouseMove e.pagePos rm.context |> toModel rm Model.Fetch
 
-        ( Msg.MouseDown, Model.Running rm ) ->
-            mousePressed True rm.context |> toModel rm Model.Running
+        ( Msg.MouseDown, Model.Fetch rm ) ->
+            mousePressed True rm.context |> toModel rm Model.Fetch
 
-        ( Msg.MouseUp, Model.Running rm ) ->
-            mousePressed False rm.context |> toModel rm Model.Running
+        ( Msg.MouseUp, Model.Fetch rm ) ->
+            mousePressed False rm.context |> toModel rm Model.Fetch
 
-        ( Msg.RunProgram programName, Model.Running rm ) ->
-            ( runNewProgram programName rm |> Model.Running, Port.getBoundingClientRect Types.elementId )
+        ( Msg.RunProgram programName, Model.Fetch rm ) ->
+            ( runNewProgram programName rm |> Model.Fetch, Port.getBoundingClientRect Types.elementId )
 
         ( Msg.RunProgram programName, Model.Executing em ) ->
-            ( runNewProgram programName em |> Model.Running, Port.getBoundingClientRect Types.elementId )
+            ( runNewProgram programName em |> Model.Fetch, Port.getBoundingClientRect Types.elementId )
 
         ( Msg.SetBoundingClientRect r, Model.Booting bm ) ->
             let
@@ -82,6 +82,28 @@ update msg model =
                     { bm | clientRect = r }
             in
             ( boot newModel, Cmd.none )
+
+        ( Msg.SetBoundingClientRect r, Model.Fetch rm ) ->
+            let
+                getContext =
+                    rm.context
+
+                newContext =
+                    case r of
+                        Just newR ->
+                            let
+                                ( cols, rows ) =
+                                    computeScreenContext getContext.computedStyle newR
+                            in
+                            { getContext | clientRect = newR, cols = cols, rows = rows }
+
+                        Nothing ->
+                            getContext
+
+                newModel =
+                    { rm | context = newContext }
+            in
+            ( Model.Fetch newModel, Cmd.none )
 
         ( Msg.SetComputedStyle s, Model.Booting bm ) ->
             let
@@ -109,11 +131,8 @@ boot m =
     case ( m.clientRect, m.computedStyle ) of
         ( Just cr, Just cs ) ->
             let
-                cols =
-                    floor (cr.width / cs.cellWidth)
-
-                rows =
-                    floor (cr.height / cs.lineHeight)
+                ( cols, rows ) =
+                    computeScreenContext cs cr
 
                 context =
                     { pointer = m.pointer
@@ -134,11 +153,11 @@ boot m =
                     }
 
                 config =
-                    { updateWithMsg = Update.updateWithMsg
-                    , step = Update.step
+                    { execute = Update.execute
+                    , fetch = Update.fetch
                     }
             in
-            Model.Running
+            Model.Fetch
                 { context = context
                 , config = config
                 , programs = Model.programs
@@ -147,6 +166,18 @@ boot m =
 
         _ ->
             Model.Booting m
+
+
+computeScreenContext : Types.ComputedStyle -> Types.BoundingClientRect -> ( Int, Int )
+computeScreenContext cs cr =
+    let
+        cols =
+            floor (cr.width / cs.cellWidth)
+
+        rows =
+            floor (cr.height / cs.lineHeight)
+    in
+    ( cols, rows )
 
 
 toModel : Model.RunningModel -> (Model.RunningModel -> Model.Model) -> (( Types.Context, b ) -> ( Model.Model, b ))

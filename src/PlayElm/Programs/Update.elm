@@ -1,17 +1,17 @@
-module PlayElm.Programs.Update exposing (step, updateWithMsg)
+module PlayElm.Programs.Update exposing (execute, fetch)
 
 import PlayElm.Msg as Msg
 import PlayElm.Port as Port
 import PlayElm.Types as Types
 
 
-step : Float -> Types.Context -> ( Types.Context, Cmd Msg.Msg )
-step newTime context =
+fetch : Float -> Types.Context -> ( Types.Context, Cmd Msg.Msg )
+fetch newTime context =
     ( Types.tick newTime context, Cmd.none )
 
 
-updateWithMsg : Types.Context -> ( Types.Context, Cmd Msg.Msg )
-updateWithMsg context =
+execute : Types.Context -> ( Types.Context, Cmd Msg.Msg )
+execute context =
     let
         commonContext =
             context.doers.runner
