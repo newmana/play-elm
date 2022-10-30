@@ -111,7 +111,9 @@ type alias Doers =
     , stringGenerator : Int -> Random.Generator String
     , intGenerator : Int -> Random.Generator (List Int)
     , floatGenerator : Int -> Random.Generator (List Float)
-    , generatedValue : String
+    , generatedString : String
+    , generatedInts : List Int
+    , generatedFloats : List Float
     }
 
 

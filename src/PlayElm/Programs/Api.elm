@@ -36,7 +36,9 @@ defaultProgram runner =
         , stringGenerator = Generator.noStringGenerator
         , intGenerator = Generator.noIntGenerator
         , floatGenerator = Generator.noFloatGenerator
-        , generatedValue = ""
+        , generatedString = ""
+        , generatedInts = []
+        , generatedFloats = []
         }
     }
 

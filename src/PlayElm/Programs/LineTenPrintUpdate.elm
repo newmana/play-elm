@@ -17,7 +17,7 @@ execute : Types.Context -> ( Types.Context, Cmd Msg.Msg )
 execute context =
     let
         newScreen =
-            StringExtra.break context.cols context.doers.generatedValue |> Array.fromList
+            StringExtra.break context.cols context.doers.generatedString |> Array.fromList
 
         newRm =
             { context | screen = newScreen, running = False }

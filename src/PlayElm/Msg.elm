@@ -11,6 +11,8 @@ type Msg
     | Tick Float
     | RunProgram String
     | RandomString String
+    | RandomInts (List Int)
+    | RandomFloats (List Float)
     | SetBoundingClientRect (Maybe Types.BoundingClientRect)
     | SetComputedStyle (Maybe Types.ComputedStyle)
     | Nothing

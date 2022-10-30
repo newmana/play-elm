@@ -43,7 +43,47 @@ update msg model =
                         getContext.doers
 
                     newDoers =
-                        { getDoers | generatedValue = str }
+                        { getDoers | generatedString = str }
+
+                    newContext =
+                        { getContext | doers = newDoers }
+                in
+                emm.config.execute newContext |> toModel emm Model.Fetch
+
+            else
+                ( model, Port.getBoundingClientRect Types.elementId )
+
+        ( Msg.RandomInts ints, Model.Executing emm ) ->
+            if emm.context.running then
+                let
+                    getContext =
+                        emm.context
+
+                    getDoers =
+                        getContext.doers
+
+                    newDoers =
+                        { getDoers | generatedInts = ints }
+
+                    newContext =
+                        { getContext | doers = newDoers }
+                in
+                emm.config.execute newContext |> toModel emm Model.Fetch
+
+            else
+                ( model, Port.getBoundingClientRect Types.elementId )
+
+        ( Msg.RandomFloats floats, Model.Executing emm ) ->
+            if emm.context.running then
+                let
+                    getContext =
+                        emm.context
+
+                    getDoers =
+                        getContext.doers
+
+                    newDoers =
+                        { getDoers | generatedFloats = floats }
 
                     newContext =
                         { getContext | doers = newDoers }
