@@ -5,8 +5,8 @@ import Random.String as RandomString
 
 
 generateMaze : Int -> Random.Generator String
-generateMaze number =
-    RandomString.string number generateSlash
+generateMaze length =
+    RandomString.string length generateSlash
 
 
 generateSlash : Random.Generator Char

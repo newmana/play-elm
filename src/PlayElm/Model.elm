@@ -12,6 +12,7 @@ import PlayElm.Msg as Msg
 import PlayElm.Programs.Balls as Balls
 import PlayElm.Programs.Circle as Circle
 import PlayElm.Programs.Cube as Cube
+import PlayElm.Programs.Generator as Generator
 import PlayElm.Programs.LineTenPrint as LineTenPrint
 import PlayElm.Programs.LineTenPrintUpdate as LineTenPrintUpdate
 import PlayElm.Programs.Plasma as Plasma
@@ -54,7 +55,9 @@ programs =
           , { config = standardUpdate
             , doers =
                 { runner = Balls.run
-                , generator = LineTenPrint.generateMaze
+                , stringGenerator = Generator.noStringGenerator
+                , intGenerator = Generator.noIntGenerator
+                , floatGenerator = Generator.noFloatGenerator
                 , generatedValue = ""
                 }
             }
@@ -63,7 +66,9 @@ programs =
           , { config = standardUpdate
             , doers =
                 { runner = Circle.run
-                , generator = LineTenPrint.generateMaze
+                , stringGenerator = Generator.noStringGenerator
+                , intGenerator = Generator.noIntGenerator
+                , floatGenerator = Generator.noFloatGenerator
                 , generatedValue = ""
                 }
             }
@@ -72,7 +77,9 @@ programs =
           , { config = standardUpdate
             , doers =
                 { runner = Cube.run
-                , generator = LineTenPrint.generateMaze
+                , stringGenerator = Generator.noStringGenerator
+                , intGenerator = Generator.noIntGenerator
+                , floatGenerator = Generator.noFloatGenerator
                 , generatedValue = ""
                 }
             }
@@ -81,7 +88,9 @@ programs =
           , { config = standardUpdate
             , doers =
                 { runner = Plasma.run
-                , generator = LineTenPrint.generateMaze
+                , stringGenerator = Generator.noStringGenerator
+                , intGenerator = Generator.noIntGenerator
+                , floatGenerator = Generator.noFloatGenerator
                 , generatedValue = ""
                 }
             }
@@ -93,7 +102,9 @@ programs =
                 }
             , doers =
                 { runner = Types.idRunner
-                , generator = LineTenPrint.generateMaze
+                , stringGenerator = LineTenPrint.generateMaze
+                , intGenerator = Generator.noIntGenerator
+                , floatGenerator = Generator.noFloatGenerator
                 , generatedValue = ""
                 }
             }

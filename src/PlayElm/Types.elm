@@ -100,16 +100,18 @@ idRunner context =
     context
 
 
-type alias Doers =
-    { runner : Runnable
-    , generator : Int -> Random.Generator String
-    , generatedValue : String
-    }
-
-
 type alias Config a =
     { execute : Context -> ( Context, Cmd a )
     , fetch : Float -> Context -> ( Context, Cmd a )
+    }
+
+
+type alias Doers =
+    { runner : Runnable
+    , stringGenerator : Int -> Random.Generator String
+    , intGenerator : Int -> Random.Generator (List Int)
+    , floatGenerator : Int -> Random.Generator (List Float)
+    , generatedValue : String
     }
 
 

@@ -10,7 +10,7 @@ import String.Extra as StringExtra
 
 fetch : Float -> Types.Context -> ( Types.Context, Cmd Msg.Msg )
 fetch _ context =
-    ( context, Random.generate Msg.RandomString (context.doers.generator (context.cols * context.rows)) )
+    ( context, Random.generate Msg.RandomString (context.doers.stringGenerator (context.cols * context.rows)) )
 
 
 execute : Types.Context -> ( Types.Context, Cmd Msg.Msg )

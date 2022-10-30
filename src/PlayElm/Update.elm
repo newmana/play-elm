@@ -6,6 +6,7 @@ import PlayElm.Model as Model
 import PlayElm.Msg as Msg
 import PlayElm.Port as Port
 import PlayElm.Programs.Balls as Balls
+import PlayElm.Programs.Generator as Generator
 import PlayElm.Programs.LineTenPrint as LineTenPrint
 import PlayElm.Programs.Update as Update
 import PlayElm.Types as Types
@@ -147,7 +148,9 @@ boot m =
                     , running = True
                     , doers =
                         { runner = Balls.run
-                        , generator = LineTenPrint.generateMaze
+                        , stringGenerator = Generator.noStringGenerator
+                        , intGenerator = Generator.noIntGenerator
+                        , floatGenerator = Generator.noFloatGenerator
                         , generatedValue = ""
                         }
                     }
