@@ -4,19 +4,10 @@ module PlayElm.Model exposing
     , RunningModel
     , changeProgram
     , defaultModel
-    , programs
     )
 
 import Dict
 import PlayElm.Msg as Msg
-import PlayElm.Programs.Balls as Balls
-import PlayElm.Programs.Circle as Circle
-import PlayElm.Programs.Cube as Cube
-import PlayElm.Programs.Generator as Generator
-import PlayElm.Programs.LineTenPrint as LineTenPrint
-import PlayElm.Programs.LineTenPrintUpdate as LineTenPrintUpdate
-import PlayElm.Programs.Plasma as Plasma
-import PlayElm.Programs.Update as Update
 import PlayElm.Types as Types
 
 
@@ -41,75 +32,14 @@ type alias RunningModel =
     }
 
 
-standardUpdate : Types.Config Msg.Msg
-standardUpdate =
-    { execute = Update.execute
-    , fetch = Update.fetch
+defaultModel : BootingModel
+defaultModel =
+    { pointer = ( 0, 0 )
+    , pressed = False
+    , time = 0.0
+    , clientRect = Nothing
+    , computedStyle = Nothing
     }
-
-
-programs : Dict.Dict String (Types.ProgramConfig Msg.Msg)
-programs =
-    Dict.fromList
-        [ ( "Balls"
-          , { config = standardUpdate
-            , doers =
-                { runner = Balls.run
-                , stringGenerator = Generator.noStringGenerator
-                , intGenerator = Generator.noIntGenerator
-                , floatGenerator = Generator.noFloatGenerator
-                , generatedValue = ""
-                }
-            }
-          )
-        , ( "Circle"
-          , { config = standardUpdate
-            , doers =
-                { runner = Circle.run
-                , stringGenerator = Generator.noStringGenerator
-                , intGenerator = Generator.noIntGenerator
-                , floatGenerator = Generator.noFloatGenerator
-                , generatedValue = ""
-                }
-            }
-          )
-        , ( "Cube"
-          , { config = standardUpdate
-            , doers =
-                { runner = Cube.run
-                , stringGenerator = Generator.noStringGenerator
-                , intGenerator = Generator.noIntGenerator
-                , floatGenerator = Generator.noFloatGenerator
-                , generatedValue = ""
-                }
-            }
-          )
-        , ( "Plasma"
-          , { config = standardUpdate
-            , doers =
-                { runner = Plasma.run
-                , stringGenerator = Generator.noStringGenerator
-                , intGenerator = Generator.noIntGenerator
-                , floatGenerator = Generator.noFloatGenerator
-                , generatedValue = ""
-                }
-            }
-          )
-        , ( "LineTenPrint"
-          , { config =
-                { execute = LineTenPrintUpdate.execute
-                , fetch = LineTenPrintUpdate.fetch
-                }
-            , doers =
-                { runner = Types.idRunner
-                , stringGenerator = LineTenPrint.generateMaze
-                , intGenerator = Generator.noIntGenerator
-                , floatGenerator = Generator.noFloatGenerator
-                , generatedValue = ""
-                }
-            }
-          )
-        ]
 
 
 changeProgram : RunningModel -> Types.ProgramConfig Msg.Msg -> String -> RunningModel
@@ -122,13 +52,3 @@ changeProgram rm p programName =
             { getContext | doers = p.doers, running = True }
     in
     { rm | config = p.config, context = newContext, programName = programName }
-
-
-defaultModel : BootingModel
-defaultModel =
-    { pointer = ( 0, 0 )
-    , pressed = False
-    , time = 0.0
-    , clientRect = Nothing
-    , computedStyle = Nothing
-    }

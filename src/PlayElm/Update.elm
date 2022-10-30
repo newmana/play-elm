@@ -5,9 +5,9 @@ import Dict
 import PlayElm.Model as Model
 import PlayElm.Msg as Msg
 import PlayElm.Port as Port
+import PlayElm.Programs.Api as ProgramsApi
 import PlayElm.Programs.Balls as Balls
 import PlayElm.Programs.Generator as Generator
-import PlayElm.Programs.LineTenPrint as LineTenPrint
 import PlayElm.Programs.Update as Update
 import PlayElm.Types as Types
 import Tuple
@@ -147,12 +147,7 @@ boot m =
                     , screen = Array.empty
                     , running = True
                     , doers =
-                        { runner = Balls.run
-                        , stringGenerator = Generator.noStringGenerator
-                        , intGenerator = Generator.noIntGenerator
-                        , floatGenerator = Generator.noFloatGenerator
-                        , generatedValue = ""
-                        }
+                        (ProgramsApi.defaultProgram Balls.run).doers
                     }
 
                 config =
@@ -163,7 +158,7 @@ boot m =
             Model.Fetch
                 { context = context
                 , config = config
-                , programs = Model.programs
+                , programs = ProgramsApi.programs
                 , programName = "Balls"
                 }
 

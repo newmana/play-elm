@@ -24,7 +24,7 @@ run context =
 
 runLine : Types.CommonContext {} -> Int -> Int -> String
 runLine context x y =
-    if x /= 0 && modBy 2 x == 0 then
+    if x /= 0 && modBy 2 x == 1 then
         let
             t =
                 context.time * 0.002

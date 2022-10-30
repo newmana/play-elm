@@ -1,4 +1,10 @@
-module PlayElm.Programs.Generator exposing (..)
+module PlayElm.Programs.Generator exposing
+    ( floatGenerator
+    , intGenerator
+    , noFloatGenerator
+    , noIntGenerator
+    , noStringGenerator
+    )
 
 import Random
 import Random.Char as RandomChar

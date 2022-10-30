@@ -39,9 +39,9 @@ viewPrograms model =
                 firstProgramName =
                     Dict.keys rm.programs |> List.head |> Maybe.withDefault ""
             in
-            List.concatMap
+            List.map
                 (\programName ->
-                    [ Html.label []
+                    Html.label []
                         [ Html.input
                             [ HtmlAttributes.type_ "radio"
                             , HtmlAttributes.name "program"
@@ -53,7 +53,6 @@ viewPrograms model =
                         , Html.span [] [ Html.text programName ]
                         , Html.br [] []
                         ]
-                    ]
                 )
                 (Dict.keys rm.programs)
 
