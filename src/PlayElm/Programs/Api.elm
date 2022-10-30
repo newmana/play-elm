@@ -12,6 +12,8 @@ import PlayElm.Msg as Msg
 import PlayElm.Programs.Balls as Balls
 import PlayElm.Programs.Circle as Circle
 import PlayElm.Programs.Cube as Cube
+import PlayElm.Programs.DoomFlame as DoomFlame
+import PlayElm.Programs.DoomFlameUpdate as DoomFlameUpdate
 import PlayElm.Programs.Generator as Generator
 import PlayElm.Programs.LineTenPrint as LineTenPrint
 import PlayElm.Programs.LineTenPrintUpdate as LineTenPrintUpdate
@@ -95,6 +97,15 @@ programs =
           )
         , ( "Cube"
           , defaultProgram Cube.run
+          )
+        , ( "Doom Flame"
+          , defaultProgram DoomFlame.run
+                |> withConfig
+                    { execute = DoomFlameUpdate.execute
+                    , fetch = DoomFlameUpdate.fetch
+                    }
+                |> withIntGenerator Generator.intGenerator
+                |> withFloatGenerator Generator.floatGenerator
           )
         , ( "Plasma"
           , defaultProgram Plasma.run

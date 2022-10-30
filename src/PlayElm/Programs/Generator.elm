@@ -1,5 +1,6 @@
 module PlayElm.Programs.Generator exposing
     ( floatGenerator
+    , floatToInt
     , intGenerator
     , noFloatGenerator
     , noIntGenerator
@@ -36,3 +37,16 @@ intGenerator length =
 floatGenerator : Int -> Random.Generator (List Float)
 floatGenerator length =
     Random.list length RandomFloat.anyFloat
+
+
+floatToInt : Float -> Int -> Int -> Int
+floatToInt f min max =
+    let
+        ( a, b ) =
+            if min > max then
+                ( max |> toFloat, min |> toFloat )
+
+            else
+                ( min |> toFloat, max |> toFloat )
+    in
+    floor (a + f * (b - a + 1))

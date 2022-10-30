@@ -9,6 +9,7 @@ tests : Test.Test
 tests =
     Test.describe "Num Tests"
         [ testMap
+        , testSmoothStep
         ]
 
 
@@ -30,4 +31,16 @@ testMap =
         , Test.test "Simple 5" <|
             \_ ->
                 Num.map 17.0 0.0 18 -100 -5 |> Expect.within (Expect.Absolute 0.0001) -10.277777777777786
+        ]
+
+
+testSmoothStep : Test.Test
+testSmoothStep =
+    Test.describe "Test smoothstep"
+        [ Test.test "Simple 1" <|
+            \_ ->
+                Num.smoothstep 0.1 1.2 0.5 |> Expect.within (Expect.Absolute 0.0001) 0.3005259203606312
+        , Test.test "Simple 2" <|
+            \_ ->
+                Num.smoothstep -0.1 4 0.1 |> Expect.within (Expect.Absolute 0.0001) 0.0069064581187156335
         ]
