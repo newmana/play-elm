@@ -1,6 +1,7 @@
 module PlayElm.Programs.DoomFlame exposing (run, tableSize)
 
 import Array
+import List.Extra as ListExtra
 import PlayElm.Modules.Num as Num
 import PlayElm.Modules.Sdf as Sdf
 import PlayElm.Types as Types
@@ -11,6 +12,7 @@ chars =
     "...::/\\/\\/\\+=*abcdef01XYZ#"
 
 
+tableSize : Int
 tableSize =
     256
 
@@ -20,6 +22,15 @@ run context =
     let
         t =
             context.time * 0.0015
+
+        ( rRands, rest1 ) =
+            ListExtra.splitAt tableSize context.effects.generatedFloats
+
+        ( pRands, rest2 ) =
+            ListExtra.splitAt tableSize rest1
+
+        noiseF =
+            valueNoise (Array.fromList rRands) (Array.fromList pRands)
 
         row rowNum =
             List.foldl (\colNum str -> str ++ runLine context colNum rowNum) "" (List.range 0 (context.cols - 1))
@@ -102,7 +113,7 @@ valueNoise r permutationRnd px py =
                 (\k acc ->
                     let
                         i =
-                            Array.get k permutationRnd |> Maybe.map (\x -> x * tableSize) |> Maybe.withDefault 0 |> floor
+                            Array.get k permutationRnd |> Maybe.map (\x -> x * toFloat tableSize) |> Maybe.withDefault 0 |> floor
 
                         permI =
                             Array.get i acc |> Maybe.withDefault 0

@@ -40,13 +40,13 @@ update msg model =
                         emm.context
 
                     getDoers =
-                        getContext.doers
+                        getContext.effects
 
                     newDoers =
                         { getDoers | generatedString = str }
 
                     newContext =
-                        { getContext | doers = newDoers }
+                        { getContext | effects = newDoers }
                 in
                 emm.config.execute emm.runner newContext |> toModel emm Model.Fetch
 
@@ -60,13 +60,13 @@ update msg model =
                         emm.context
 
                     getDoers =
-                        getContext.doers
+                        getContext.effects
 
                     newDoers =
                         { getDoers | generatedInts = ints }
 
                     newContext =
-                        { getContext | doers = newDoers }
+                        { getContext | effects = newDoers }
                 in
                 emm.config.execute emm.runner newContext |> toModel emm Model.Fetch
 
@@ -80,13 +80,13 @@ update msg model =
                         emm.context
 
                     getDoers =
-                        getContext.doers
+                        getContext.effects
 
                     newDoers =
                         { getDoers | generatedFloats = floats }
 
                     newContext =
-                        { getContext | doers = newDoers }
+                        { getContext | effects = newDoers }
                 in
                 emm.config.execute emm.runner newContext |> toModel emm Model.Fetch
 
@@ -186,7 +186,7 @@ boot m =
                     , cols = cols
                     , screen = Array.empty
                     , running = True
-                    , doers =
+                    , effects =
                         (ProgramsApi.defaultProgram Balls.run).effects
                     }
 

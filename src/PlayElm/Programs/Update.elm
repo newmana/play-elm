@@ -25,7 +25,7 @@ execute runner context =
                 , rows = context.rows
                 , screen = context.screen
                 , running = context.running
-                , doers = context.doers
+                , effects = context.effects
                 }
 
         newContext =
@@ -39,7 +39,7 @@ execute runner context =
             , rows = contextResult.rows
             , screen = contextResult.screen
             , running = contextResult.running
-            , doers = context.doers
+            , effects = context.effects
             }
     in
     ( newContext, Port.getBoundingClientRect Types.elementId )

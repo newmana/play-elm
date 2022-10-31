@@ -10,14 +10,14 @@ import String.Extra as StringExtra
 
 fetch : Float -> Types.Context -> ( Types.Context, Cmd Msg.Msg )
 fetch _ context =
-    ( context, Random.generate Msg.RandomString (context.doers.stringGenerator (context.cols * context.rows)) )
+    ( context, Random.generate Msg.RandomString (context.effects.stringGenerator (context.cols * context.rows)) )
 
 
 execute : Types.Runnable -> Types.Context -> ( Types.Context, Cmd Msg.Msg )
 execute runner context =
     let
         newScreen =
-            StringExtra.break context.cols context.doers.generatedString |> Array.fromList
+            StringExtra.break context.cols context.effects.generatedString |> Array.fromList
 
         newRm =
             { context | screen = newScreen, running = False }

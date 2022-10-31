@@ -18,14 +18,14 @@ fetch _ context =
         noiseRndNumbers =
             DoomFlame.tableSize * 2
     in
-    ( context, Random.generate Msg.RandomFloats (context.doers.floatGenerator (1 + dataRndNumbers + noiseRndNumbers)) )
+    ( context, Random.generate Msg.RandomFloats (context.effects.floatGenerator (noiseRndNumbers + 1 + dataRndNumbers)) )
 
 
 execute : Types.Runnable -> Types.Context -> ( Types.Context, Cmd Msg.Msg )
 execute runner context =
     let
         newScreen =
-            StringExtra.break context.cols context.doers.generatedString |> Array.fromList
+            StringExtra.break context.cols context.effects.generatedString |> Array.fromList
 
         newRm =
             { context | screen = newScreen, running = False }

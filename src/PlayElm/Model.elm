@@ -50,7 +50,7 @@ changeProgram rm p programName =
             rm.context
 
         newContext =
-            { getContext | doers = p.effects, running = True }
+            { getContext | effects = p.effects, running = True }
     in
     { rm
         | runner = p.runner

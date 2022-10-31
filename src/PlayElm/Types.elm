@@ -87,7 +87,7 @@ cursor context =
 
 type alias Context =
     CommonContext
-        { doers : SideEffects
+        { effects : SideEffects
         }
 
 
