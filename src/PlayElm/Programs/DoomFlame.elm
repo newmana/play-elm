@@ -105,9 +105,82 @@ transform ( pX, pY ) ( transX, transY ) rot =
     ( newX, newY )
 
 
-valueNoise : List Float -> Float -> Float -> Float
-valueNoise r px py =
+valueNoise : Array.Array Float -> Array.Array Float -> Float -> Float -> Float
+valueNoise r permutationRnd px py =
     let
+        permutationTableInit =
+            Array.initialize (tableSize * 2)
+                (\i ->
+                    if i < tableSize then
+                        i
+
+                    else
+                        0
+                )
+
+        permutationTable =
+            List.foldl
+                (\k acc ->
+                    let
+                        i =
+                            Array.get k permutationRnd |> Maybe.map (\x -> x * tableSize) |> Maybe.withDefault 0 |> floor
+
+                        permI =
+                            Array.get i acc |> Maybe.withDefault 0
+
+                        permK =
+                            Array.get k acc |> Maybe.withDefault 0
+
+                        newK =
+                            Array.set k permI acc
+
+                        newI =
+                            Array.set i permK newK
+
+                        newNewK =
+                            Array.get k newI |> Maybe.withDefault 0
+
+                        newKTableSize =
+                            Array.set (k + tableSize) newNewK newI
+                    in
+                    newKTableSize
+                )
+                permutationTableInit
+                (List.range 0 tableSize)
+
+        xi =
+            floor px
+
+        yi =
+            floor py
+
+        tx =
+            px - (xi |> toFloat)
+
+        ty =
+            py - (yi |> toFloat)
+
+        rx0 =
+            modBy tableSize xi
+
+        rx1 =
+            modBy tableSize (rx0 + 1)
+
+        ry0 =
+            modBy tableSize yi
+
+        ry1 =
+            modBy tableSize (ry0 + 1)
+
+        permRx0 =
+            Array.get rx0 permutationTable
+                |> Maybe.withDefault 0
+                |> (\x -> x + rx0)
+                |> (\xx -> Array.get xx permutationTable)
+                |> Maybe.withDefault 0
+                |> (\xxx -> Array.get xxx r)
+                |> Maybe.withDefault 0
+
         c00 =
             0.0
 
@@ -119,12 +192,6 @@ valueNoise r px py =
 
         c11 =
             0.0
-
-        tx =
-            px - (floor px |> toFloat)
-
-        ty =
-            py - (floor py |> toFloat)
 
         sx =
             Num.smoothstep 0 1 tx
