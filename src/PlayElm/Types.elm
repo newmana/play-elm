@@ -6,9 +6,9 @@ module PlayElm.Types exposing
     , Config
     , Context
     , Cursor
-    , Doers
     , ProgramConfig
     , Runnable
+    , SideEffects
     , cursor
     , elementId
     , idRunner
@@ -77,7 +77,7 @@ type alias Cursor =
     }
 
 
-cursor : CommonContext {} -> Cursor
+cursor : Context -> Cursor
 cursor context =
     { x = min (context.cols - 1 |> toFloat) ((context.pointer |> Tuple.first) / context.computedStyle.cellWidth)
     , y = min (context.rows - 1 |> toFloat) ((context.pointer |> Tuple.second) / context.computedStyle.lineHeight)
@@ -87,12 +87,12 @@ cursor context =
 
 type alias Context =
     CommonContext
-        { doers : Doers
+        { doers : SideEffects
         }
 
 
 type alias Runnable =
-    CommonContext {} -> CommonContext {}
+    Context -> Context
 
 
 idRunner : Runnable
@@ -101,14 +101,13 @@ idRunner context =
 
 
 type alias Config a =
-    { execute : Context -> ( Context, Cmd a )
+    { execute : Runnable -> Context -> ( Context, Cmd a )
     , fetch : Float -> Context -> ( Context, Cmd a )
     }
 
 
-type alias Doers =
-    { runner : Runnable
-    , stringGenerator : Int -> Random.Generator String
+type alias SideEffects =
+    { stringGenerator : Int -> Random.Generator String
     , intGenerator : Int -> Random.Generator (List Int)
     , floatGenerator : Int -> Random.Generator (List Float)
     , generatedString : String
@@ -119,5 +118,6 @@ type alias Doers =
 
 type alias ProgramConfig a =
     { config : Config a
-    , doers : Doers
+    , runner : Runnable
+    , effects : SideEffects
     }

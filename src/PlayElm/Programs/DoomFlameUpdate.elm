@@ -21,8 +21,8 @@ fetch _ context =
     ( context, Random.generate Msg.RandomFloats (context.doers.floatGenerator (1 + dataRndNumbers + noiseRndNumbers)) )
 
 
-execute : Types.Context -> ( Types.Context, Cmd Msg.Msg )
-execute context =
+execute : Types.Runnable -> Types.Context -> ( Types.Context, Cmd Msg.Msg )
+execute runner context =
     let
         newScreen =
             StringExtra.break context.cols context.doers.generatedString |> Array.fromList

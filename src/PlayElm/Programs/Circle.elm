@@ -22,7 +22,7 @@ run context =
     { context | screen = newScreen }
 
 
-runLine : Types.CommonContext {} -> Int -> Int -> String
+runLine : Types.Context -> Int -> Int -> String
 runLine context x y =
     if x /= 0 && modBy 2 x == 1 then
         let

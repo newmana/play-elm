@@ -93,7 +93,7 @@ run context =
     { context | screen = newScreen }
 
 
-runLine : Types.CommonContext {} -> Array.Array ( Float, Float ) -> Int -> Int -> String
+runLine : Types.Context -> Array.Array ( Float, Float ) -> Int -> Int -> String
 runLine context boxProj x y =
     let
         m =

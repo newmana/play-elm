@@ -26,6 +26,7 @@ type alias BootingModel =
 
 type alias RunningModel =
     { context : Types.Context
+    , runner : Types.Runnable
     , config : Types.Config Msg.Msg
     , programs : Dict.Dict String (Types.ProgramConfig Msg.Msg)
     , programName : String
@@ -49,6 +50,11 @@ changeProgram rm p programName =
             rm.context
 
         newContext =
-            { getContext | doers = p.doers, running = True }
+            { getContext | doers = p.effects, running = True }
     in
-    { rm | config = p.config, context = newContext, programName = programName }
+    { rm
+        | runner = p.runner
+        , config = p.config
+        , context = newContext
+        , programName = programName
+    }

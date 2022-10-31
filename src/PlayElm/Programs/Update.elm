@@ -10,11 +10,11 @@ fetch newTime context =
     ( Types.tick newTime context, Cmd.none )
 
 
-execute : Types.Context -> ( Types.Context, Cmd Msg.Msg )
-execute context =
+execute : Types.Runnable -> Types.Context -> ( Types.Context, Cmd Msg.Msg )
+execute runner context =
     let
-        commonContext =
-            context.doers.runner
+        contextResult =
+            runner
                 { pointer = context.pointer
                 , pressed = context.pressed
                 , time = context.time
@@ -25,19 +25,20 @@ execute context =
                 , rows = context.rows
                 , screen = context.screen
                 , running = context.running
+                , doers = context.doers
                 }
 
         newContext =
-            { pointer = commonContext.pointer
-            , pressed = commonContext.pressed
-            , time = commonContext.time
-            , clientRect = commonContext.clientRect
-            , computedStyle = commonContext.computedStyle
-            , aspect = commonContext.aspect
-            , cols = commonContext.cols
-            , rows = commonContext.rows
-            , screen = commonContext.screen
-            , running = commonContext.running
+            { pointer = contextResult.pointer
+            , pressed = contextResult.pressed
+            , time = contextResult.time
+            , clientRect = contextResult.clientRect
+            , computedStyle = contextResult.computedStyle
+            , aspect = contextResult.aspect
+            , cols = contextResult.cols
+            , rows = contextResult.rows
+            , screen = contextResult.screen
+            , running = contextResult.running
             , doers = context.doers
             }
     in

@@ -23,7 +23,7 @@ run context =
     { context | screen = newScreen }
 
 
-runLine : Types.CommonContext {} -> Int -> Int -> String
+runLine : Types.Context -> Int -> Int -> String
 runLine context x y =
     let
         t1 =

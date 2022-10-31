@@ -13,8 +13,8 @@ fetch _ context =
     ( context, Random.generate Msg.RandomString (context.doers.stringGenerator (context.cols * context.rows)) )
 
 
-execute : Types.Context -> ( Types.Context, Cmd Msg.Msg )
-execute context =
+execute : Types.Runnable -> Types.Context -> ( Types.Context, Cmd Msg.Msg )
+execute runner context =
     let
         newScreen =
             StringExtra.break context.cols context.doers.generatedString |> Array.fromList

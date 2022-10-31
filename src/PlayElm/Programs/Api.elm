@@ -33,9 +33,9 @@ standardUpdate =
 defaultProgram : Types.Runnable -> Types.ProgramConfig Msg.Msg
 defaultProgram runner =
     { config = standardUpdate
-    , doers =
-        { runner = runner
-        , stringGenerator = Generator.noStringGenerator
+    , runner = runner
+    , effects =
+        { stringGenerator = Generator.noStringGenerator
         , intGenerator = Generator.noIntGenerator
         , floatGenerator = Generator.noFloatGenerator
         , generatedString = ""
@@ -54,36 +54,36 @@ withStringGenerator : (Int -> Random.Generator String) -> Types.ProgramConfig Ms
 withStringGenerator sg pc =
     let
         getDoers =
-            pc.doers
+            pc.effects
 
         newDoers =
             { getDoers | stringGenerator = sg }
     in
-    { pc | doers = newDoers }
+    { pc | effects = newDoers }
 
 
 withIntGenerator : (Int -> Random.Generator (List Int)) -> Types.ProgramConfig Msg.Msg -> Types.ProgramConfig Msg.Msg
 withIntGenerator ig pc =
     let
         getDoers =
-            pc.doers
+            pc.effects
 
         newDoers =
             { getDoers | intGenerator = ig }
     in
-    { pc | doers = newDoers }
+    { pc | effects = newDoers }
 
 
 withFloatGenerator : (Int -> Random.Generator (List Float)) -> Types.ProgramConfig Msg.Msg -> Types.ProgramConfig Msg.Msg
 withFloatGenerator fg pc =
     let
         getDoers =
-            pc.doers
+            pc.effects
 
         newDoers =
             { getDoers | floatGenerator = fg }
     in
-    { pc | doers = newDoers }
+    { pc | effects = newDoers }
 
 
 programs : Dict.Dict String (Types.ProgramConfig Msg.Msg)

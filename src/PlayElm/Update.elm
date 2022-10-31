@@ -28,7 +28,7 @@ update msg model =
 
         ( Msg.Tick newTime, Model.Executing emm ) ->
             if emm.context.running then
-                emm.config.execute emm.context |> toModel emm Model.Fetch
+                emm.config.execute emm.runner emm.context |> toModel emm Model.Fetch
 
             else
                 ( Types.tick newTime emm.context, Port.getBoundingClientRect Types.elementId ) |> toModel emm Model.Fetch
@@ -48,7 +48,7 @@ update msg model =
                     newContext =
                         { getContext | doers = newDoers }
                 in
-                emm.config.execute newContext |> toModel emm Model.Fetch
+                emm.config.execute emm.runner newContext |> toModel emm Model.Fetch
 
             else
                 ( model, Port.getBoundingClientRect Types.elementId )
@@ -68,7 +68,7 @@ update msg model =
                     newContext =
                         { getContext | doers = newDoers }
                 in
-                emm.config.execute newContext |> toModel emm Model.Fetch
+                emm.config.execute emm.runner newContext |> toModel emm Model.Fetch
 
             else
                 ( model, Port.getBoundingClientRect Types.elementId )
@@ -88,7 +88,7 @@ update msg model =
                     newContext =
                         { getContext | doers = newDoers }
                 in
-                emm.config.execute newContext |> toModel emm Model.Fetch
+                emm.config.execute emm.runner newContext |> toModel emm Model.Fetch
 
             else
                 ( model, Port.getBoundingClientRect Types.elementId )
@@ -187,7 +187,7 @@ boot m =
                     , screen = Array.empty
                     , running = True
                     , doers =
-                        (ProgramsApi.defaultProgram Balls.run).doers
+                        (ProgramsApi.defaultProgram Balls.run).effects
                     }
 
                 config =
@@ -197,6 +197,7 @@ boot m =
             in
             Model.Fetch
                 { context = context
+                , runner = Balls.run
                 , config = config
                 , programs = ProgramsApi.programs
                 , programName = "Balls"
