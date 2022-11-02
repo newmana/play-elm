@@ -29,6 +29,9 @@ run context =
         ( pRands, rest2 ) =
             ListExtra.splitAt tableSize rest1
 
+        ( cursorRand, dataRands ) =
+            ListExtra.splitAt 1 rest2
+
         noiseF =
             valueNoise (Array.fromList rRands) (Array.fromList pRands)
 

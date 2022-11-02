@@ -12,11 +12,11 @@ import String.Extra as StringExtra
 fetch : Float -> Types.Context -> ( Types.Context, Cmd Msg.Msg )
 fetch _ context =
     let
-        dataRndNumbers =
-            context.cols * context.rows * 2
-
         noiseRndNumbers =
             DoomFlame.tableSize * 2
+
+        dataRndNumbers =
+            context.cols * context.rows * 2
     in
     ( context, Random.generate Msg.RandomFloats (context.effects.floatGenerator (noiseRndNumbers + 1 + dataRndNumbers)) )
 
