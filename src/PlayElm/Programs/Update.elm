@@ -12,34 +12,4 @@ fetch newTime context =
 
 execute : Types.Runnable -> Types.Context -> ( Types.Context, Cmd Msg.Msg )
 execute runner context =
-    let
-        contextResult =
-            runner
-                { pointer = context.pointer
-                , pressed = context.pressed
-                , time = context.time
-                , clientRect = context.clientRect
-                , computedStyle = context.computedStyle
-                , aspect = context.aspect
-                , cols = context.cols
-                , rows = context.rows
-                , screen = context.screen
-                , running = context.running
-                , effects = context.effects
-                }
-
-        newContext =
-            { pointer = contextResult.pointer
-            , pressed = contextResult.pressed
-            , time = contextResult.time
-            , clientRect = contextResult.clientRect
-            , computedStyle = contextResult.computedStyle
-            , aspect = contextResult.aspect
-            , cols = contextResult.cols
-            , rows = contextResult.rows
-            , screen = contextResult.screen
-            , running = contextResult.running
-            , effects = context.effects
-            }
-    in
-    ( newContext, Port.getBoundingClientRect Types.elementId )
+    ( runner context, Port.getBoundingClientRect Types.elementId )

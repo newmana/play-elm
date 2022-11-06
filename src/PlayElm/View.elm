@@ -79,24 +79,22 @@ viewPrograms model =
 
 viewScreen : Model.Model -> List (Html.Html Msg.Msg)
 viewScreen model =
+    let
+        screenRender screen =
+            Array.map
+                (\l ->
+                    Html.span [ HtmlAttributes.style "display" "block" ]
+                        [ Html.text l ]
+                )
+                screen
+                |> Array.toList
+    in
     case model of
         Model.Booting _ ->
             []
 
         Model.Fetch rm ->
-            Array.map
-                (\l ->
-                    Html.span [ HtmlAttributes.style "display" "block" ]
-                        [ Html.text l ]
-                )
-                rm.context.screen
-                |> Array.toList
+            screenRender rm.context.screen
 
         Model.Executing rm ->
-            Array.map
-                (\l ->
-                    Html.span [ HtmlAttributes.style "display" "block" ]
-                        [ Html.text l ]
-                )
-                rm.context.screen
-                |> Array.toList
+            screenRender rm.context.screen

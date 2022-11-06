@@ -133,10 +133,13 @@ update msg model =
                     case r of
                         Just newR ->
                             let
-                                ( cols, rows ) =
+                                ( newCols, newRows ) =
                                     computeScreenContext getContext.computedStyle newR
+
+                                newResized =
+                                    not (newCols == getContext.cols && newRows == getContext.rows)
                             in
-                            { getContext | clientRect = newR, cols = cols, rows = rows }
+                            { getContext | clientRect = newR, cols = newCols, rows = newRows, resized = newResized }
 
                         Nothing ->
                             getContext
@@ -184,6 +187,7 @@ boot m =
                     , aspect = cs.cellWidth / cs.lineHeight
                     , rows = rows
                     , cols = cols
+                    , resized = False
                     , screen = Array.empty
                     , running = True
                     , effects =

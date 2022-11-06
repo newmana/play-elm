@@ -111,7 +111,7 @@ programs =
           , defaultProgram Plasma.run
           )
         , ( "LineTenPrint"
-          , defaultProgram Types.idRunner
+          , defaultProgram identity
                 |> withConfig
                     { execute = LineTenPrintUpdate.execute
                     , fetch = LineTenPrintUpdate.fetch

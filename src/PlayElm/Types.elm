@@ -1,6 +1,5 @@
 module PlayElm.Types exposing
     ( BoundingClientRect
-    , CommonContext
     , CommonProperties
     , ComputedStyle
     , Config
@@ -11,7 +10,6 @@ module PlayElm.Types exposing
     , SideEffects
     , cursor
     , elementId
-    , idRunner
     , tick
     )
 
@@ -57,19 +55,6 @@ tick delta anyM =
     { anyM | time = anyM.time + delta }
 
 
-type alias CommonContext a =
-    CommonProperties
-        { a
-            | clientRect : BoundingClientRect
-            , computedStyle : ComputedStyle
-            , aspect : Float
-            , cols : Int
-            , rows : Int
-            , screen : Array.Array String
-            , running : Bool
-        }
-
-
 type alias Cursor =
     { x : Float
     , y : Float
@@ -86,8 +71,16 @@ cursor context =
 
 
 type alias Context =
-    CommonContext
-        { effects : SideEffects
+    CommonProperties
+        { clientRect : BoundingClientRect
+        , computedStyle : ComputedStyle
+        , aspect : Float
+        , cols : Int
+        , rows : Int
+        , resized : Bool
+        , screen : Array.Array String
+        , running : Bool
+        , effects : SideEffects
         }
 
 
