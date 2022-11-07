@@ -188,6 +188,7 @@ boot m =
                     , rows = rows
                     , cols = cols
                     , resized = False
+                    , buffer = Array.empty
                     , screen = Array.empty
                     , running = True
                     , effects =

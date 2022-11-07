@@ -112,7 +112,7 @@ runLine context boxProj x y =
             Num.map (Types.cursor context |> .x) 0.0 (context.cols |> toFloat) 0.001 0.1
 
         d =
-            List.foldl
+            List.foldr
                 (\edge currD ->
                     let
                         aa =

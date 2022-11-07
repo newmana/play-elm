@@ -23,11 +23,4 @@ fetch _ context =
 
 execute : Types.Runnable -> Types.Context -> ( Types.Context, Cmd Msg.Msg )
 execute runner context =
-    let
-        newScreen =
-            StringExtra.break context.cols context.effects.generatedString |> Array.fromList
-
-        newRm =
-            { context | screen = newScreen, running = False }
-    in
-    ( newRm, Port.getBoundingClientRect Types.elementId )
+    ( runner context, Port.getBoundingClientRect Types.elementId )

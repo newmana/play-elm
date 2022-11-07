@@ -78,6 +78,7 @@ type alias Context =
         , cols : Int
         , rows : Int
         , resized : Bool
+        , buffer : Array.Array Int
         , screen : Array.Array String
         , running : Bool
         , effects : SideEffects

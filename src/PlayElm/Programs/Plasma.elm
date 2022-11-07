@@ -15,10 +15,10 @@ run : Types.Runnable
 run context =
     let
         row rowNum =
-            List.foldl (\colNum str -> str ++ runLine context colNum rowNum) "" (List.range 0 (context.cols - 1))
+            List.foldr (\colNum str -> str ++ runLine context colNum rowNum) "" (List.range 0 (context.cols - 1))
 
         newScreen =
-            List.foldl (\rowNum -> Array.push (row rowNum)) Array.empty (List.range 0 (context.rows - 1))
+            List.foldr (\rowNum -> Array.push (row rowNum)) Array.empty (List.range 0 (context.rows - 1))
     in
     { context | screen = newScreen }
 

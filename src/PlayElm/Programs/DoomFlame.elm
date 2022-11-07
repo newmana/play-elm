@@ -23,6 +23,13 @@ run context =
         t =
             context.time * 0.0015
 
+        currentBuffer =
+            if context.resized then
+                Array.initialize (context.cols * context.rows) (always 0)
+
+            else
+                context.buffer
+
         ( rRands, rest1 ) =
             ListExtra.splitAt tableSize context.effects.generatedFloats
 
@@ -35,8 +42,11 @@ run context =
         noiseF =
             valueNoise (Array.fromList rRands) (Array.fromList pRands)
 
+        calcNoise colNum =
+            Num.map (noiseF (toFloat colNum * 0.05) t) 0 1 5 40 |> floor
+
         row rowNum =
-            List.foldl (\colNum str -> str ++ runLine context colNum rowNum) "" (List.range 0 (context.cols - 1))
+            List.foldr (\colNum str -> str ++ runLine (calcNoise colNum)) "" (List.range 0 (context.cols - 1))
 
         newScreen =
             List.foldl (\rowNum -> Array.push (row rowNum)) Array.empty (List.range 0 (context.rows - 1))
@@ -44,58 +54,17 @@ run context =
     { context | screen = newScreen }
 
 
-runLine : Types.Context -> Int -> Int -> String
-runLine context x y =
-    let
-        t =
-            context.time * 0.001 + 10
+runLine : Int -> String
+runLine u =
+    if u == 0 then
+        " "
 
-        m =
-            min context.cols context.rows |> toFloat
-
-        a =
-            context.aspect
-
-        stX =
-            2.0 * (toFloat x - toFloat context.cols / 2.0) / m * a
-
-        stY =
-            2.0 * (toFloat y - toFloat context.rows / 2.0) / m
-
-        s =
-            Num.map (sin (t * 0.5)) -1 1 0.0 0.9
-
-        dR num i =
-            Num.map (cos (t * 0.95 * (i + 1) / (num + 1))) -1 1 0.1 0.3
-
-        dX num i =
-            Num.map (cos (t * 0.23 * (i / num * pi + pi))) -1 1 -1.2 1.2
-
-        dY num i =
-            Num.map (sin (t * 0.37 * (i / num * pi + pi))) -1 1 -1.2 1.2
-
-        dF num i =
-            ( 1.0, 1.0 )
-
-        maxNum =
-            12
-
-        calc fIndex currentD =
-            Sdf.opSmoothUnion currentD (Sdf.sdCircle (dF maxNum fIndex) (dR maxNum fIndex)) s
-
-        d =
-            List.foldl
-                (\index currentD -> calc (toFloat index) currentD)
-                1.0e100
-                (List.range 0 (maxNum - 1))
-
-        c =
-            1.0 - (e ^ (-3 * abs d))
-
-        charsIndex =
-            floor (c * (String.length chars |> toFloat))
-    in
-    String.slice charsIndex (charsIndex + 1) chars
+    else
+        let
+            charsIndex =
+                clamp 0 (String.length chars) u
+        in
+        String.slice charsIndex (charsIndex + 1) chars
 
 
 valueNoise : Array.Array Float -> Array.Array Float -> Float -> Float -> Float
