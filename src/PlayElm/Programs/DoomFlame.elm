@@ -42,14 +42,18 @@ run context =
         noiseF =
             valueNoise (Array.fromList rRands) (Array.fromList pRands)
 
-        calcNoise colNum =
-            Num.map (noiseF (toFloat colNum * 0.05) t) 0 1 5 40 |> floor
+        calcNoise rowNum colNum =
+            if rowNum == 0 then
+                Num.map (noiseF (toFloat colNum * 0.05) t) 0 1 5 40 |> floor
+
+            else
+                0
 
         row rowNum =
-            List.foldr (\colNum str -> str ++ runLine (calcNoise colNum)) "" (List.range 0 (context.cols - 1))
+            List.foldr (\colNum str -> str ++ runLine (calcNoise rowNum colNum)) "" (List.range 0 (context.cols - 1))
 
         newScreen =
-            List.foldl (\rowNum -> Array.push (row rowNum)) Array.empty (List.range 0 (context.rows - 1))
+            List.foldr (\rowNum -> Array.push (row rowNum)) Array.empty (List.range 0 (context.rows - 1))
     in
     { context | screen = newScreen }
 
