@@ -19,24 +19,24 @@ noStringGenerator _ =
     RandomString.string 0 RandomChar.english
 
 
-noIntGenerator : Int -> Random.Generator (List Int)
-noIntGenerator _ =
-    Random.list 0 RandomInt.anyInt
+noIntGenerator : Int -> Int -> Int -> Random.Generator (List Int)
+noIntGenerator _ _ _ =
+    intGenerator 0 0 1
 
 
-noFloatGenerator : Int -> Random.Generator (List Float)
-noFloatGenerator _ =
-    Random.list 0 RandomFloat.anyFloat
+noFloatGenerator : Int -> Float -> Float -> Random.Generator (List Float)
+noFloatGenerator _ _ _ =
+    floatGenerator 0 0.0 1.0
 
 
-intGenerator : Int -> Random.Generator (List Int)
-intGenerator length =
-    Random.list length RandomInt.anyInt
+intGenerator : Int -> Int -> Int -> Random.Generator (List Int)
+intGenerator length min max =
+    Random.list length (Random.int min max)
 
 
-floatGenerator : Int -> Random.Generator (List Float)
-floatGenerator length =
-    Random.list length RandomFloat.anyFloat
+floatGenerator : Int -> Float -> Float -> Random.Generator (List Float)
+floatGenerator length min max =
+    Random.list length (Random.float min max)
 
 
 floatToInt : Float -> Int -> Int -> Int

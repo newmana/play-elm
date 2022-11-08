@@ -102,8 +102,8 @@ type alias Config a =
 
 type alias SideEffects =
     { stringGenerator : Int -> Random.Generator String
-    , intGenerator : Int -> Random.Generator (List Int)
-    , floatGenerator : Int -> Random.Generator (List Float)
+    , intGenerator : Int -> Int -> Int -> Random.Generator (List Int)
+    , floatGenerator : Int -> Float -> Float -> Random.Generator (List Float)
     , generatedString : String
     , generatedInts : List Int
     , generatedFloats : List Float

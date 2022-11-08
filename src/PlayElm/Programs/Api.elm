@@ -62,7 +62,7 @@ withStringGenerator sg pc =
     { pc | effects = newDoers }
 
 
-withIntGenerator : (Int -> Random.Generator (List Int)) -> Types.ProgramConfig Msg.Msg -> Types.ProgramConfig Msg.Msg
+withIntGenerator : (Int -> Int -> Int -> Random.Generator (List Int)) -> Types.ProgramConfig Msg.Msg -> Types.ProgramConfig Msg.Msg
 withIntGenerator ig pc =
     let
         getDoers =
@@ -74,7 +74,7 @@ withIntGenerator ig pc =
     { pc | effects = newDoers }
 
 
-withFloatGenerator : (Int -> Random.Generator (List Float)) -> Types.ProgramConfig Msg.Msg -> Types.ProgramConfig Msg.Msg
+withFloatGenerator : (Int -> Float -> Float -> Random.Generator (List Float)) -> Types.ProgramConfig Msg.Msg -> Types.ProgramConfig Msg.Msg
 withFloatGenerator fg pc =
     let
         getDoers =

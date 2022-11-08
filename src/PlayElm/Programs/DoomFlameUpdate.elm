@@ -18,7 +18,7 @@ fetch _ context =
         dataRndNumbers =
             context.cols * context.rows * 2
     in
-    ( context, Random.generate Msg.RandomFloats (context.effects.floatGenerator (noiseRndNumbers + 1 + dataRndNumbers)) )
+    ( context, Random.generate Msg.RandomFloats (context.effects.floatGenerator (noiseRndNumbers + 1 + dataRndNumbers) 0.0 1.0) )
 
 
 execute : Types.Runnable -> Types.Context -> ( Types.Context, Cmd Msg.Msg )
